@@ -1,0 +1,11 @@
+[package]
+name = "domain"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = "1.0"
+anyhow = "1.0"
+uuid = { version = "1.12", features = ["v4"] }
+data = { version = "0.1.0",path = "../data"}
+chrono = "0.4.39"

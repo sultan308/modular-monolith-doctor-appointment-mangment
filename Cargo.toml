@@ -1,0 +1,15 @@
+[package]
+name = "modular-monolith-doctor-appointment-booking"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+uuid = { version = "1.10.0", features = ["v4"] }
+axum = { version = "0.8" , features = ["macros"]}
+tokio = { version = "1.42", features = ["rt", "rt-multi-thread", "macros"] }
+hyper = "1.5.2"
+serde = { version = "1.0.217", features = ["derive"] }
+mongodb = "3.2"
+doctor_availability = {path = "./doctor_availability", version = "0.1.0"}
+futures = "0.3.31"
+dotenv = {version = "0.15.0"}
