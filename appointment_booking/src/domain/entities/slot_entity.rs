@@ -54,7 +54,7 @@ impl SlotEntity {
     pub fn get_doctors_id(&self) -> ObjectId {
         self.doctor_id
     }
-    pub fn get_utc_time(&self) -> DateTime {
+    pub fn get_time(&self) -> DateTime {
         self.time
     }
     pub fn get_duration_in_min(&self) -> u16 {
@@ -68,6 +68,12 @@ impl SlotEntity {
             return true;
         }
         false
+    }
+    pub fn get_reserved_time(&self) -> DateTime {
+        if !self.is_reserved(){
+           panic!("Slot is not Reserved");
+        }
+        self.reserved_at.unwrap()
     }
     pub fn is_canceled(&self) -> bool {
         if self.canceled_at.is_some(){
