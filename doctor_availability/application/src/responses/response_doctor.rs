@@ -1,5 +1,5 @@
 use serde::{Serialize, Deserialize};
-use domain::models::Doctor;
+use business::models::Doctor;
 use crate::ObjectId;
 
 #[derive(Serialize,Deserialize)]

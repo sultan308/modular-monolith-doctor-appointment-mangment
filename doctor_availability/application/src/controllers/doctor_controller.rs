@@ -4,8 +4,8 @@ use crate::ObjectId;
 use crate::payloads::{CreateDoctorPayload, UpdateDoctorPayload};
 use crate::responses::{ResponseDoctor};
 
-use domain::services::DoctorServices;
-use domain::MongoDataBase;
+use business::services::DoctorServices;
+use business::MongoDataBase;
 
 
 pub struct DoctorsController {

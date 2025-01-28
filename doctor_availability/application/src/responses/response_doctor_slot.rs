@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Serialize, Deserialize};
-use domain::models::Slot;
+use business::models::Slot;
 use crate::{ObjectId};
 #[derive(Serialize,Deserialize)]
 pub struct ResponseDoctorSlot {

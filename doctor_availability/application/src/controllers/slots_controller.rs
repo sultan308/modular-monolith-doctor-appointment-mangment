@@ -4,9 +4,9 @@ use crate::{DateTime,ObjectId};
 use crate::payloads::{AddSlotPayload};
 use crate::responses::{ResponseDoctorSlot};
 
-use domain::models::Slot;
-use domain::services::SlotsServices;
-use domain::MongoDataBase;
+use business::models::Slot;
+use business::services::SlotsServices;
+use business::MongoDataBase;
 
 
 pub struct SlotsController {
