@@ -4,4 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-presentation={path = "presentation"}
+anyhow = "1.0.95"
+async-trait = "0.1.85"
+bson = "2.13.0"
+mongodb = "3.2"
+serde = { version = "1.0.217", features = ["derive"] }
+
+doctor_availability = {path = "../doctor_availability", version = "0.1.0"}

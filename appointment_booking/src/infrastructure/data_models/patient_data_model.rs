@@ -1,6 +1,6 @@
 use bson::{oid::ObjectId};
 use serde::{Deserialize, Serialize};
-use domain::entities::PatientEntity;
+use crate::domain::PatientEntity;
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct PatientDataModel {

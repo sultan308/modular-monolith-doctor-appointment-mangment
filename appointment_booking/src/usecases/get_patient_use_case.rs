@@ -1,10 +1,9 @@
 use anyhow::Result;
+use bson::{oid::ObjectId};
 
-use domain::repository_traits::PatientRepositoryTrait;
-use infrastructure::{MongoDataBase, ObjectId};
-use infrastructure::repositories::MongoPatientRepository;
-
-use crate::responses::ResponsePatient;
+use crate::domain::PatientRepositoryTrait;
+use crate::infrastructure::{MongoDataBase,MongoPatientRepository};
+use crate::usecases::responses::ResponsePatient;
 
 pub struct GetPatientUseCase{
     patients_repo : Box<dyn PatientRepositoryTrait>

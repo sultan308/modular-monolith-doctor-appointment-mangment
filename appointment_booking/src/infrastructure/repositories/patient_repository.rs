@@ -1,10 +1,9 @@
 use async_trait::async_trait;
 use bson::{oid::ObjectId, doc};
 use mongodb::{Collection, Database};
-use domain::entities::PatientEntity;
-use domain::repository_traits::{PatientRepositoryResult, PatientRepositoryTrait};
+use crate::domain::{PatientEntity, PatientRepositoryResult, PatientRepositoryTrait};
 
-use crate::data_models::PatientDataModel;
+use crate::infrastructure::data_models::PatientDataModel;
 const DEFAULT_SLOTS_COLLECTION_NAME: &str = "patients";
 
 

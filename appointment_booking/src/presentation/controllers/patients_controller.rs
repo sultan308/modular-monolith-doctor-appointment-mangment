@@ -1,10 +1,13 @@
 use anyhow::Result;
+use bson::oid::ObjectId;
 
-use usecases::{CreatePatientUseCase, CreatePatientUseCaseInterface, GetPatientUseCase};
-use infrastructure::{MongoDataBase, ObjectId};
+use crate::infrastructure::MongoDataBase;
+use crate::usecases::{CreatePatientUseCase,
+                      CreatePatientUseCaseInterface, GetPatientUseCase,
+                      ResponsePatient};
 
-use crate::payloads::patient_payloads::CreatePatientPayload;
-use crate::responses::ResponsePatient;
+
+use crate::presentation::payloads::patient_payloads::CreatePatientPayload;
 
 pub struct PatientController {
     get_patient_use_case: GetPatientUseCase,

@@ -1,7 +1,7 @@
 use serde::{Serialize, Deserialize};
 
-use infrastructure::ObjectId;
-use domain::entities::PatientEntity;
+use bson::{oid::ObjectId};
+use crate::domain::PatientEntity;
 #[derive(Serialize,Deserialize)]
 pub struct ResponsePatient {
     pub id: ObjectId,

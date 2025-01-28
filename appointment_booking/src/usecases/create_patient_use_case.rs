@@ -1,11 +1,8 @@
 use anyhow::Result;
 
-use domain::entities::PatientEntity;
-use domain::repository_traits::PatientRepositoryTrait;
-use infrastructure::MongoDataBase;
-use infrastructure::repositories::MongoPatientRepository;
-
-use crate::responses::ResponsePatient;
+use crate::domain::{PatientEntity,PatientRepositoryTrait};
+use crate::infrastructure::{MongoDataBase,MongoPatientRepository};
+use crate::usecases::responses::ResponsePatient;
 pub struct CreatePatientUseCaseInterface {
     pub name: String,
     pub email: String
