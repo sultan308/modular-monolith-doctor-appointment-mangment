@@ -1,0 +1,13 @@
+[package]
+name = "infrastructure"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+async-trait = "0.1.85"
+bson={version = "2.13.0"}
+mongodb = "3.2"
+serde = { version = "1.0.217", features = ["derive"] }
+
+domain={path = "../domain", version = "0.1.0"}
+
