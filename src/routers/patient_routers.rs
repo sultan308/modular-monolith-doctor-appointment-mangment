@@ -6,7 +6,7 @@ use axum::routing::{get, post};
 use mongodb::bson::{oid::ObjectId};
 
 use appointment_booking::payloads::patient_payloads::CreatePatientPayload;
-use appointment_booking::responses::ResponsePatient;
+use appointment_booking::responses::{AvailableSlotResponse, ResponsePatient};
 
 use crate::AppState;
 
@@ -14,6 +14,7 @@ pub fn get_patients_router(app_state: AppState) -> Router {
     let  patients_router= Router::new()
         .route("/patient", post(create_patient_handler))
         .route("/patient/{patient_id}", get(get_patient_by_id_handler))
+        .route("/patient/{patient_id}/available-appointments", get(get_available_appointments))
         .with_state(app_state);
     patients_router
 }
@@ -33,4 +34,15 @@ async fn get_patient_by_id_handler(State(app_state): State<AppState>,
     let response_patient = patients_controller.get_patient(patient_id).await.unwrap();
     (StatusCode::OK, Json::from(response_patient))
 }
+
+async fn get_available_appointments(State(app_state): State<AppState>,
+                                   Path(patient_id): Path<ObjectId>) -> (StatusCode, Json<Vec<AvailableSlotResponse>>){
+
+    let appointments_controller = app_state.appointments_controller.lock().await;
+    let response_patient = appointments_controller.get_available_appointments(patient_id).await.unwrap();
+    (StatusCode::OK, Json::from(response_patient))
+}
+
+
+
 

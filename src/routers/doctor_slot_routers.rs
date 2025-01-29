@@ -24,7 +24,7 @@ async fn add_doctor_slot(State(app_state): State<AppState>,
 }
 async fn get_doctor_slots(State(app_state): State<AppState>,Path(doctor_id): Path<ObjectId>,) -> (StatusCode, Json<Vec<ResponseDoctorSlot>>){
     let doctor_slots_controller = app_state.doctor_slots_controller.lock().await;
-    let response_slots = doctor_slots_controller.get_all(doctor_id).await.unwrap();
+    let response_slots = doctor_slots_controller.get_all_slots_by_doctor(doctor_id).await.unwrap();
     (StatusCode::OK, Json::from(response_slots))
 }
 
