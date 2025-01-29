@@ -93,8 +93,8 @@ impl SlotsRepositoryFilter {
     pub fn to_mongo_filter_document(self) -> Document {
         let mut filter = doc!();
         let reserved_at_filter = SlotsRepositoryFilter::does_exist_filter(self.is_reserved);
-        let completed_at_filter = SlotsRepositoryFilter::does_exist_filter(self.is_reserved);;
-        let canceled_at_filter = SlotsRepositoryFilter::does_exist_filter(self.is_reserved);;
+        let completed_at_filter = SlotsRepositoryFilter::does_exist_filter(self.is_reserved);
+        let canceled_at_filter = SlotsRepositoryFilter::does_exist_filter(self.is_reserved);
         let time_filter_document = self.get_time_filter_document();
 
         if self.doctor_id.is_some(){ filter.insert("doctor_id", self.doctor_id.unwrap());};
