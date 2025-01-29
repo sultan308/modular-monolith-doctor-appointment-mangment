@@ -73,6 +73,7 @@ impl Slot {
     pub fn get_doctors_id(&self) -> ObjectId {
         self.doctor_id
     }
+    pub fn get_reserving_patient_id(&self) -> Option<ObjectId> {self.reserving_patient_id}
     pub fn get_utc_time(&self) -> DateTime {
         self.time
     }
@@ -82,24 +83,11 @@ impl Slot {
     pub fn get_cost_in_cents(&self) -> usize {
         self.cost_cents
     }
-    pub fn is_reserved(&self) -> bool {
-        if self.reserved_at.is_some(){
-            return true;
-        }
-        false
-    }
-    pub fn is_canceled(&self) -> bool {
-        if self.canceled_at.is_some(){
-            return true;
-        }
-        false
-    }
-    pub fn is_completed(&self) -> bool {
-        if self.completed_at.is_some(){
-            return true;
-        }
-        false
-    }
+    pub fn is_reserved(&self) -> bool { self.reserved_at.is_some() }
+    pub fn is_canceled(&self) -> bool { self.canceled_at.is_some() }
+    pub fn is_completed(&self) -> bool { self.completed_at.is_some() }
+
+    pub fn reserved_at(&self) -> Option<DateTime> { self.reserved_at }
 
 }
 // Setters

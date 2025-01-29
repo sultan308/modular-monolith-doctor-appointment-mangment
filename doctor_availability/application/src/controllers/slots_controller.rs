@@ -29,8 +29,12 @@ impl SlotsController {
         self.slots_services.delete_doctor_slot(slot_id, doctor_id).await?;
         Ok(())
     }
-    pub async fn get_all(&self, doctor_id : ObjectId ) -> Result<Vec<ResponseDoctorSlot>> {
+    pub async fn get_all_slots_by_doctor(&self, doctor_id : ObjectId ) -> Result<Vec<ResponseDoctorSlot>> {
         let found_doctor_slots = self.slots_services.get_all_doctor_slots(doctor_id).await?;
+        Ok(found_doctor_slots.into_iter().map(ResponseDoctorSlot::from_slot).collect())
+    }
+    pub async fn get_all_bookable_slots(&self) -> Result<Vec<ResponseDoctorSlot>> {
+        let found_doctor_slots = self.slots_services.get_all_bookable_slots().await?;
         Ok(found_doctor_slots.into_iter().map(ResponseDoctorSlot::from_slot).collect())
     }
     pub async fn get_by_id(&self, slot_id: ObjectId, doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {

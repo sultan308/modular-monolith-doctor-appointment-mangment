@@ -2,7 +2,7 @@ use std::sync::Arc;
 use async_trait::async_trait;
 use crate::repositories::{SlotsRepository, SlotsRepositoryResult};
 use mongodb::{Collection, Database};
-use bson::doc;
+use bson::{doc, Document};
 use crate::{ObjectId};
 use crate::data_models::SlotDataModel;
 use futures::TryStreamExt;
@@ -26,6 +26,7 @@ impl SlotsMongoRepository {
 
 #[async_trait]
 impl SlotsRepository for SlotsMongoRepository {
+
     async fn delete(&mut self, slot_id: ObjectId, doctor_id: ObjectId) -> SlotsRepositoryResult<()> {
 
         self.slots_collection
@@ -35,8 +36,7 @@ impl SlotsRepository for SlotsMongoRepository {
     }
 
     async fn list(&self, slot_filter: SlotsRepositoryFilter) -> SlotsRepositoryResult<Vec<SlotDataModel>> {
-
-        let filter =  doc!{ "doctor_id": slot_filter.doctor_id, "patient_id":slot_filter.patient_id  };
+        let filter =slot_filter.to_mongo_filter_document();
         let cursor = self.slots_collection.find(filter).await?;
         let slots = cursor.try_collect().await?;
         Ok(slots)
@@ -67,4 +67,44 @@ impl SlotsRepository for SlotsMongoRepository {
         self.slots_collection.update_one(filter, update).await?;
         Ok(())
     }
+}
+// SlotsRepositoryFilter -> mongo filter
+impl SlotsRepositoryFilter {
+
+    fn get_time_filter_document(&self)  -> Option<Document>{
+        let mut time_filter_document = doc!();
+        if self.time_before.is_some() {
+            time_filter_document.insert("$lt", self.time_before.unwrap());
+        };
+        if self.time_after.is_some() {
+            time_filter_document.insert("$gt", self.time_after.unwrap());
+        };
+        if time_filter_document.is_empty(){
+            return None
+        }
+        Some(time_filter_document)
+    }
+    fn does_exist_filter(does_exist: Option<bool>) -> Option<Document> {
+        match does_exist {
+            Some(does_exist_value) => Some(doc! { "$exists": does_exist_value}),
+            None => None
+        }
+    }
+    pub fn to_mongo_filter_document(self) -> Document {
+        let mut filter = doc!();
+        let reserved_at_filter = SlotsRepositoryFilter::does_exist_filter(self.is_reserved);
+        let completed_at_filter = SlotsRepositoryFilter::does_exist_filter(self.is_reserved);;
+        let canceled_at_filter = SlotsRepositoryFilter::does_exist_filter(self.is_reserved);;
+        let time_filter_document = self.get_time_filter_document();
+
+        if self.doctor_id.is_some(){ filter.insert("doctor_id", self.doctor_id.unwrap());};
+        if self.patient_id.is_some(){ filter.insert("patient_id", self.patient_id.unwrap());};
+        if completed_at_filter.is_some(){ filter.insert("completed_at", completed_at_filter.unwrap());};
+        if canceled_at_filter.is_some(){ filter.insert("canceled_at",canceled_at_filter.unwrap());};
+        if reserved_at_filter.is_some(){ filter.insert("reserved_at", reserved_at_filter.unwrap());};
+        if time_filter_document.is_some(){filter.insert("time",time_filter_document.unwrap());};
+        filter
+
+    }
+
 }

@@ -1,5 +1,5 @@
 use crate::models::Slot;
-use crate::{ObjectId};
+use crate::{ObjectId,DateTime};
 use data::repositories::{SlotsRepository, SlotsMongoRepository, SlotsRepositoryFilter};
 use anyhow::Result;
 use data::MongoDataBase;
@@ -48,6 +48,21 @@ impl SlotsServices {
         let doctor_slots: Vec<Slot> = slots_data.into_iter().map(Slot::from).collect();
         Ok(doctor_slots)
     }
+    pub async fn get_all_bookable_slots(&self) -> Result<Vec<Slot>>{
+        let slots_filter = SlotsRepositoryFilter{
+            doctor_id: None,
+            patient_id: None,
+            is_canceled: Some(false),
+            is_reserved: Some(false),
+            is_completed: Some(false),
+            time_before: None,
+            time_after: Some(DateTime::now())
+        };
+        let slots_data = self.slots_repo.list(slots_filter).await?;
+        let doctor_slots: Vec<Slot> = slots_data.into_iter().map(Slot::from).collect();
+        Ok(doctor_slots)
+    }
+
 
     pub async fn update_slot(&mut self, updated_slot: &Slot) -> Result<()> {
         let updated_slot_data = updated_slot.to_slot_data_model();
