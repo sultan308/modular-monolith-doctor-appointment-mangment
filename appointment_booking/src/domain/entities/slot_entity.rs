@@ -5,39 +5,32 @@ pub struct SlotEntity {
     id: ObjectId,
     doctor_id: ObjectId,
     reserving_patient_id: Option<ObjectId>,
-
+    is_canceled: bool,
+    is_completed: bool,
     reserved_at: Option<DateTime>,
-    canceled_at: Option<DateTime>,
-    completed_at: Option<DateTime>,
-
     time: DateTime,
     duration_in_min: u16,
     cost_cents: usize,
 }
 // factories
 impl SlotEntity {
-    pub fn new(doctor_id: ObjectId, time: DateTime, duration_in_min: u16, cost_cents: usize) -> SlotEntity {
-        SlotEntity {
-            id : ObjectId::new(),
-            doctor_id,
-            reserving_patient_id: None,
-            reserved_at: None,
-            canceled_at: None,
-            completed_at: None,
-            time,
-            duration_in_min,
-            cost_cents,
-
-        }
-    }
-    pub fn build(slot_id: ObjectId, doctor_id: ObjectId, time: DateTime, duration_in_min: u16, cost_cents: usize) -> SlotEntity {
+    pub fn build(slot_id: ObjectId,
+                 doctor_id: ObjectId,
+                 reserving_patient_id: Option<ObjectId>,
+                 reserved_at: Option<DateTime>,
+                 time: DateTime,
+                 duration_in_min: u16,
+                 cost_cents: usize,
+                 is_completed: bool,
+                 is_canceled: bool
+    ) -> SlotEntity {
         SlotEntity {
             id : slot_id,
             doctor_id,
-            reserving_patient_id: None,
-            reserved_at: None,
-            canceled_at: None,
-            completed_at: None,
+            reserving_patient_id,
+            reserved_at,
+            is_completed,
+            is_canceled,
             time,
             duration_in_min,
             cost_cents,
@@ -75,18 +68,8 @@ impl SlotEntity {
         }
         self.reserved_at.unwrap()
     }
-    pub fn is_canceled(&self) -> bool {
-        if self.canceled_at.is_some(){
-            return true;
-        }
-        false
-    }
-    pub fn is_completed(&self) -> bool {
-        if self.completed_at.is_some(){
-            return true;
-        }
-        false
-    }
+    pub fn is_canceled(&self) -> bool {self.is_canceled}
+    pub fn is_completed(&self) -> bool {self.is_completed}
 
 }
 

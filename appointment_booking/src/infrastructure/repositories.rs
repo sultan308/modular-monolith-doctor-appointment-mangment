@@ -1,3 +1,5 @@
 mod patient_repository;
+mod patient_appointment_repository;
 
 pub use patient_repository::MongoPatientRepository;
+pub use patient_appointment_repository::DoctorAvailabilityPatientAppointmentRepository;
