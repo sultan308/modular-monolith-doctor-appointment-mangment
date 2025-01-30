@@ -48,10 +48,10 @@ impl SlotsRepository for SlotsMongoRepository {
         Ok(slots)
     }
 
-    async fn load(&self,slot_id: ObjectId, doctor_id: ObjectId) -> SlotsRepositoryResult<Option<SlotDataModel>> {
+    async fn load(&self,slot_id: ObjectId) -> SlotsRepositoryResult<Option<SlotDataModel>> {
         let result = self
             .slots_collection
-            .find_one(doc! { "_id": slot_id , "doctor_id": doctor_id })
+            .find_one(doc! { "_id": slot_id })
             .await?;
         Ok(result)
     }
@@ -61,8 +61,12 @@ impl SlotsRepository for SlotsMongoRepository {
         Ok(slot_data._id)
     }
 
-    async fn update(&mut self, slot_data: &SlotDataModel) -> SlotsRepositoryResult<()> {
-        let filter = doc! { "_id": slot_data._id, "doctor_id": slot_data.doctor_id};
+    async fn update(&mut self, slot_data: &SlotDataModel, filter: Option<SlotsRepositoryFilter>) -> SlotsRepositoryResult<()> {
+
+        let filter = match filter {
+            Some(filter) => filter.to_mongo_filter_document(),
+            None => doc! { "_id": slot_data._id}
+        };
         let update = doc! { "$set": bson::to_document(slot_data)? };
         self.slots_collection.update_one(filter, update).await?;
         Ok(())

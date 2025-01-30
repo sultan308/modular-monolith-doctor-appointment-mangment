@@ -18,6 +18,17 @@ impl SlotsServices {
 }
 
 impl SlotsServices {
+    fn get_bookable_slot_filter() -> SlotsRepositoryFilter{
+        SlotsRepositoryFilter{
+            doctor_id: None,
+            patient_id: None,
+            is_canceled: Some(false),
+            is_reserved: Some(false),
+            is_completed: Some(false),
+            time_before: None,
+            time_after: Some(DateTime::now())
+        }
+    }
     pub async fn add_slot_for_doctor(&mut self, new_slot :Slot) -> Result<Slot>{
         let slot_data = new_slot.to_slot_data_model();
         self.slots_repo.create(&slot_data).await?;
@@ -29,8 +40,8 @@ impl SlotsServices {
         Ok(())
     }
 
-    pub async fn get_doctor_slot(&self, slot_id: ObjectId, doctor_id: ObjectId) -> Result<Slot>{
-        let slot_data = self.slots_repo.load(slot_id, doctor_id).await?;
+    pub async fn get_slot(&self, slot_id: ObjectId) -> Result<Slot>{
+        let slot_data = self.slots_repo.load(slot_id).await?;
         let slot = Slot::from(slot_data.unwrap());
         Ok(slot)
     }
@@ -38,6 +49,20 @@ impl SlotsServices {
         let slots_filter = SlotsRepositoryFilter{
             doctor_id: Some(doctor_id),
             patient_id: None,
+            is_canceled:None,
+            is_reserved: None,
+            is_completed:None,
+            time_before: None,
+            time_after:None
+        };
+        let slots_data = self.slots_repo.list(slots_filter).await?;
+        let doctor_slots: Vec<Slot> = slots_data.into_iter().map(Slot::from).collect();
+        Ok(doctor_slots)
+    }
+    pub async fn get_all_patient_reserved_slots(&self, patient_id: ObjectId) -> Result<Vec<Slot>>{
+        let slots_filter = SlotsRepositoryFilter{
+            doctor_id: None,
+            patient_id: Some(patient_id),
             is_canceled:None,
             is_reserved: None,
             is_completed:None,
@@ -66,8 +91,17 @@ impl SlotsServices {
 
     pub async fn update_slot(&mut self, updated_slot: &Slot) -> Result<()> {
         let updated_slot_data = updated_slot.to_slot_data_model();
-        self.slots_repo.update(&updated_slot_data).await?;
+        self.slots_repo.update(&updated_slot_data, None).await?;
         Ok(())
+    }
+
+    pub async fn reserve_slot(&mut self, slot_id: ObjectId, patient_id: ObjectId) -> Result<Slot>{
+        let mut slot = self.get_slot(slot_id).await?;
+        slot.reserve(patient_id);
+        let updated_slot_data = slot.to_slot_data_model();
+        let bookable_slot_filter = SlotsServices::get_bookable_slot_filter();
+        self.slots_repo.update(&updated_slot_data, Some(bookable_slot_filter)).await?;
+        Ok(slot)
     }
 
 }

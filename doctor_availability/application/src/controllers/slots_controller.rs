@@ -33,30 +33,32 @@ impl SlotsController {
         let found_doctor_slots = self.slots_services.get_all_doctor_slots(doctor_id).await?;
         Ok(found_doctor_slots.into_iter().map(ResponseDoctorSlot::from_slot).collect())
     }
+    pub async fn get_all_slots_by_patient(&self, patient_id : ObjectId ) -> Result<Vec<ResponseDoctorSlot>> {
+        let found_doctor_slots = self.slots_services.get_all_patient_reserved_slots(patient_id).await?;
+        Ok(found_doctor_slots.into_iter().map(ResponseDoctorSlot::from_slot).collect())
+    }
     pub async fn get_all_bookable_slots(&self) -> Result<Vec<ResponseDoctorSlot>> {
         let found_doctor_slots = self.slots_services.get_all_bookable_slots().await?;
         Ok(found_doctor_slots.into_iter().map(ResponseDoctorSlot::from_slot).collect())
     }
     pub async fn get_by_id(&self, slot_id: ObjectId, doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {
-        let found_slot = self.slots_services.get_doctor_slot(slot_id, doctor_id).await?;
+        let found_slot = self.slots_services.get_slot(slot_id).await?;
         Ok(ResponseDoctorSlot::from_slot(found_slot))
     }
-    pub async fn reserve_slot(&mut self, slot_id: ObjectId, doctor_id : ObjectId, patient_id: ObjectId) -> Result<ResponseDoctorSlot> {
-        let mut slot = self.slots_services.get_doctor_slot(slot_id, doctor_id).await?;
-        slot.reserve(patient_id);
-        self.slots_services.update_slot(&slot).await?;
+    pub async fn reserve_slot(&mut self, slot_id: ObjectId, patient_id: ObjectId) -> Result<ResponseDoctorSlot> {
+        let slot = self.slots_services.reserve_slot(slot_id, patient_id).await?;
         Ok(ResponseDoctorSlot::from_slot(slot))
 
     }
-    pub async fn complete_slot(&mut self, slot_id: ObjectId, doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {
-        let mut slot = self.slots_services.get_doctor_slot(slot_id, doctor_id).await?;
+    pub async fn complete_slot(&mut self, slot_id: ObjectId, _doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {
+        let mut slot = self.slots_services.get_slot(slot_id).await?;
         slot.complete();
         self.slots_services.update_slot(&slot).await?;
         Ok(ResponseDoctorSlot::from_slot(slot))
 
     }
-    pub async fn cancel_slot(&mut self, slot_id: ObjectId, doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {
-        let mut slot = self.slots_services.get_doctor_slot(slot_id, doctor_id).await?;
+    pub async fn cancel_slot(&mut self, slot_id: ObjectId, _doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {
+        let mut slot = self.slots_services.get_slot(slot_id).await?;
         slot.cancel();
         self.slots_services.update_slot(&slot).await?;
         Ok(ResponseDoctorSlot::from_slot(slot))

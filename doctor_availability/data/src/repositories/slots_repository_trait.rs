@@ -24,7 +24,7 @@ pub trait SlotsRepository: Sync + Send {
     async fn delete(&mut self,slot_id: ObjectId, doctor_id: ObjectId) -> SlotsRepositoryResult<()>;
     async fn list(&self, slot_filter: SlotsRepositoryFilter) -> SlotsRepositoryResult<Vec<SlotDataModel>>;
     async fn list_doctor_slots(&self, doctor_id: ObjectId) -> SlotsRepositoryResult<Vec<SlotDataModel>>;
-    async fn load(&self, slot_id: ObjectId, doctor_id: ObjectId) -> SlotsRepositoryResult<Option<SlotDataModel>>;
+    async fn load(&self, slot_id: ObjectId) -> SlotsRepositoryResult<Option<SlotDataModel>>;
     async fn create(&mut self, slot_data: &SlotDataModel) -> SlotsRepositoryResult<ObjectId>;
-    async fn update(&mut self, slot_data: &SlotDataModel) -> SlotsRepositoryResult<()>;
+    async fn update(&mut self, slot_data: &SlotDataModel, filter: Option<SlotsRepositoryFilter>) -> SlotsRepositoryResult<()>;
 }
