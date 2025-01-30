@@ -23,7 +23,7 @@ fn get_app_state(db: &Database) -> AppState {
     let doctor_slots_controller = Arc::new(Mutex::new(SlotsController::with_mongo_db(&db)));
     let patient_controllers =  Arc::new(Mutex::new(PatientController::with_mongo_db(&db)));
 
-    let appointments_controller = Arc::new(Mutex::new(AppointmentsController::with_slots_controller(doctor_slots_controller.clone())));
+    let appointments_controller = Arc::new(Mutex::new(AppointmentsController::with_slots_controller_and_mongo_db(doctor_slots_controller.clone(), &db)));
 
     AppState {
         appointments_controller,
