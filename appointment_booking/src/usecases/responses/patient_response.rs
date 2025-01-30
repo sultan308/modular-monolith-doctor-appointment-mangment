@@ -17,4 +17,11 @@ impl ResponsePatient{
             email: patient_entity.get_email().to_string(),
         }
     }
+    pub fn to_patient_entity(self) -> PatientEntity {
+        PatientEntity::build(
+            self.id,
+            &self.name,
+            &self.email
+        )
+    }
 }
