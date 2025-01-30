@@ -18,7 +18,7 @@ impl GetPatientUseCase {
 }
 
 impl GetPatientUseCase{
-    pub async fn by_id(&mut self, patient_id: ObjectId) -> Result<ResponsePatient>{
+    pub async fn by_id(&self, patient_id: ObjectId) -> Result<ResponsePatient>{
         let retrieved_patient = self.patients_repo.get_patient_by_id(patient_id).await?;
         Ok(ResponsePatient::from(retrieved_patient))
     }
