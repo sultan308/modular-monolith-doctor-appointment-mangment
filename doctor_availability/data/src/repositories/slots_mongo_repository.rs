@@ -102,7 +102,7 @@ impl SlotsRepositoryFilter {
         let time_filter_document = self.get_time_filter_document();
 
         if self.doctor_id.is_some(){ filter.insert("doctor_id", self.doctor_id.unwrap());};
-        if self.patient_id.is_some(){ filter.insert("patient_id", self.patient_id.unwrap());};
+        if self.patient_id.is_some(){ filter.insert("reserving_patient_id", self.patient_id.unwrap());};
         if completed_at_filter.is_some(){ filter.insert("completed_at", completed_at_filter.unwrap());};
         if canceled_at_filter.is_some(){ filter.insert("canceled_at",canceled_at_filter.unwrap());};
         if reserved_at_filter.is_some(){ filter.insert("reserved_at", reserved_at_filter.unwrap());};
