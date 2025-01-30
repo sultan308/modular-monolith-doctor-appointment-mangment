@@ -24,4 +24,6 @@ impl PatientAppointmentEntity {
     pub fn get_patient_email(&self) -> &str {self.patient.get_email()}
     pub fn get_appointment_start_time(&self) -> DateTime {self.slot.get_time()}
     pub fn get_appointment_reserve_time(&self) -> DateTime {self.slot.get_reserved_time()}
+    pub fn is_canceled(&self) -> bool {self.slot.is_canceled()}
+    pub fn is_completed(&self) -> bool {self.slot.is_completed()}
 }
