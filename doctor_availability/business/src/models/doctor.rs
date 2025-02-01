@@ -55,26 +55,31 @@ mod doctor_tests {
     fn test_to_build_doctor(){
         let expected_id = ObjectId::new();
         let expected_name = "Hassan Ibrahim";
+        let expected_email = "hassan.ibrahim@example.com";
 
-        let test_doctor = Doctor::build(expected_id, expected_name);
+        let test_doctor = Doctor::build(expected_id, expected_name, expected_email);
 
         assert_eq!(test_doctor.id, expected_id);
         assert_eq!(test_doctor.name, expected_name);
+        assert_eq!(test_doctor.email, expected_email);
     }
 
     #[test]
     fn test_doctor_from_doctor_data_model(){
         let expected_id = ObjectId::new();
         let expected_name = "Hassan Ibrahim";
+        let expected_email ="hasssan_ibrahim@email.com";
+
         let test_doctor_data_model = DoctorDataModel{
             _id: expected_id,
             name: String::from(expected_name),
-            email: String::from("hasssan_ibrahim@email.com")
+            email: String::from(expected_email)
         };
         let test_doctor = Doctor::from(test_doctor_data_model);
 
         assert_eq!(test_doctor.id, expected_id);
         assert_eq!(test_doctor.name, expected_name);
+        assert_eq!(test_doctor.email, expected_email);
 
     }
 
