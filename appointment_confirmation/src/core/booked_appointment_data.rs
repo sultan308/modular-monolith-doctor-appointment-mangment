@@ -8,6 +8,5 @@ pub  struct BookedAppointmentData {
     pub patient_name: String,
     pub patient_email: String,
 
-    pub appointment_time: DateTime<Utc>,
-    pub booked_at: DateTime<Utc>
+    pub appointment_time: DateTime<Utc>
 }
