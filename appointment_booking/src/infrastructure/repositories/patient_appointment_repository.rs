@@ -1,13 +1,12 @@
 use async_trait::async_trait;
-use bson::{oid::ObjectId, doc, DateTime};
-use chrono;
+use bson::{oid::ObjectId, DateTime};
 use std::sync::Arc;
 use futures::lock::Mutex;
 
 use doctor_availability::controllers::SlotsController;
 use doctor_availability::responses:: ResponseDoctorSlot;
 use mongodb::Database;
-use crate::domain::{PatientAppointmentRepositoryTrait, PatientAppointmentRepositoryResult, AppointmentEntity, PatientEntity, SlotEntity, DoctorEntity, DoctorReadRepositoryTrait};
+use crate::domain::{PatientAppointmentRepositoryTrait, PatientAppointmentRepositoryResult, AppointmentEntity, PatientEntity, SlotEntity, DoctorReadRepositoryTrait};
 use crate::infrastructure::repositories::MongoDoctorReadRepository;
 
 
