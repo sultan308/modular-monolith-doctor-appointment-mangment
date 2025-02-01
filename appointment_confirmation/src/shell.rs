@@ -1,1 +1,4 @@
-mod notfiy_trigger;
+mod notify_trigger;
+pub mod payloads;
+
+pub use notify_trigger::NotifierTrigger;
