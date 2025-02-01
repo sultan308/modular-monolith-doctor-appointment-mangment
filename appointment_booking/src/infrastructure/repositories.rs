@@ -1,5 +1,8 @@
+mod mongo_doctor_read_repository;
 mod patient_repository;
 mod patient_appointment_repository;
 
+
+pub use mongo_doctor_read_repository::MongoDoctorReadRepository;
 pub use patient_repository::MongoPatientRepository;
 pub use patient_appointment_repository::DoctorAvailabilityPatientAppointmentRepository;
