@@ -13,7 +13,7 @@ impl Notification {
 
 
             Notification::DoctorAppointmentConfirmationNotification => format!(
-                "Hey Dr. {},\n{}booked an appointment with you at {}.",
+                "Hey Dr. {},\nYour patient {} has booked an appointment with you at {}.",
                 booked_appointment_data.doctor_name, booked_appointment_data.patient_name, booked_appointment_data.appointment_time),
         }
     }
