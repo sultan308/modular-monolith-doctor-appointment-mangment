@@ -1,0 +1,10 @@
+[package]
+name = "doctor_appointment_management"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bson = "2.13.0"
+chrono = "0.4.39"
+
+doctor_availability = {path = "../doctor_availability", version = "0.1.0"}
