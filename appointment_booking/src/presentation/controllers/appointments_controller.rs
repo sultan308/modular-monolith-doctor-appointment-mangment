@@ -20,7 +20,7 @@ impl AppointmentsController {
     pub fn with_slots_controller_and_mongo_db(slots_controller: Arc<Mutex<SlotsController>>, mongo_data_base: &MongoDataBase) -> AppointmentsController {
         AppointmentsController {
             book_patient_appointment_use_case:BookPatientAppointmentUseCase::with_slots_controller_and_mongo_db(slots_controller.clone(), mongo_data_base),
-            get_available_slots_use_case: GetAvailableSlotsUseCase::with_slots_controller(slots_controller.clone()),
+            get_available_slots_use_case: GetAvailableSlotsUseCase::with_slots_controller(slots_controller.clone(), mongo_data_base),
             get_patient_appointments_use_case: GetPatientAppointmentsUseCase::with_slots_controller_and_mongo_db(slots_controller, mongo_data_base)
         }
     }

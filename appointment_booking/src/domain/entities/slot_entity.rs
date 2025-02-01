@@ -1,23 +1,20 @@
 use bson::{oid::ObjectId, DateTime};
 
+
 #[derive(Debug, Clone)]
 pub struct SlotEntity {
     id: ObjectId,
     doctor_id: ObjectId,
-    reserving_patient_id: Option<ObjectId>,
-    is_canceled: bool,
-    is_completed: bool,
-    reserved_at: Option<DateTime>,
     time: DateTime,
     duration_in_min: u16,
     cost_cents: usize,
+    is_canceled: bool,
+    is_completed: bool
 }
 // factories
 impl SlotEntity {
     pub fn build(slot_id: ObjectId,
                  doctor_id: ObjectId,
-                 reserving_patient_id: Option<ObjectId>,
-                 reserved_at: Option<DateTime>,
                  time: DateTime,
                  duration_in_min: u16,
                  cost_cents: usize,
@@ -27,8 +24,6 @@ impl SlotEntity {
         SlotEntity {
             id : slot_id,
             doctor_id,
-            reserving_patient_id,
-            reserved_at,
             is_completed,
             is_canceled,
             time,
@@ -55,18 +50,6 @@ impl SlotEntity {
     }
     pub fn get_cost_in_cents(&self) -> usize {
         self.cost_cents
-    }
-    pub fn is_reserved(&self) -> bool {
-        if self.reserved_at.is_some(){
-            return true;
-        }
-        false
-    }
-    pub fn get_reserved_time(&self) -> DateTime {
-        if !self.is_reserved(){
-           panic!("Slot is not Reserved");
-        }
-        self.reserved_at.unwrap()
     }
     pub fn is_canceled(&self) -> bool {self.is_canceled}
     pub fn is_completed(&self) -> bool {self.is_completed}

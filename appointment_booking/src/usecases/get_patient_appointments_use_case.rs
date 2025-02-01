@@ -19,7 +19,7 @@ impl GetPatientAppointmentsUseCase{
     pub fn with_slots_controller_and_mongo_db(slots_controller: Arc<Mutex<SlotsController>>,
                                               m_db: &MongoDataBase) -> GetPatientAppointmentsUseCase {
         GetPatientAppointmentsUseCase {
-            patient_appointment_repository: Box::new(DoctorAvailabilityPatientAppointmentRepository::new(slots_controller)),
+            patient_appointment_repository: Box::new(DoctorAvailabilityPatientAppointmentRepository::new(slots_controller, m_db)),
             get_patient_use_case: GetPatientUseCase::with_mongo_db(m_db)
         }
     }

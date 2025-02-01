@@ -3,7 +3,7 @@ use anyhow::Result;
 use bson::oid::ObjectId;
 use doctor_availability::controllers::SlotsController;
 use futures::lock::Mutex;
-use crate::domain::{PatientAppointmentEntity, PatientAppointmentRepositoryTrait, PatientEntity};
+use crate::domain::{AppointmentEntity, PatientAppointmentRepositoryTrait, PatientEntity};
 use crate::infrastructure::{DoctorAvailabilityPatientAppointmentRepository, MongoDataBase, MongoPatientRepository};
 use crate::usecases::GetPatientUseCase;
 use crate::usecases::responses::PatientAppointmentResponse;
@@ -18,7 +18,7 @@ impl BookPatientAppointmentUseCase{
     pub fn with_slots_controller_and_mongo_db(slots_controller: Arc<Mutex<SlotsController>>,
                                               m_db: &MongoDataBase) -> BookPatientAppointmentUseCase {
         BookPatientAppointmentUseCase {
-            patient_appointment_repository: Box::new(DoctorAvailabilityPatientAppointmentRepository::new(slots_controller)),
+            patient_appointment_repository: Box::new(DoctorAvailabilityPatientAppointmentRepository::new(slots_controller,m_db)),
             get_patient_use_case: GetPatientUseCase::with_mongo_db(m_db)
         }
     }

@@ -3,7 +3,7 @@ use std::sync::Arc;
 use futures::lock::Mutex;
 
 use doctor_availability::controllers::SlotsController;
-
+use mongodb::Database;
 use crate::domain::{PatientAppointmentRepositoryTrait};
 use crate::infrastructure::DoctorAvailabilityPatientAppointmentRepository;
 use crate::usecases::responses::AvailableSlotResponse;
@@ -13,9 +13,9 @@ pub struct GetAvailableSlotsUseCase{
 }
 
 impl GetAvailableSlotsUseCase {
-    pub fn with_slots_controller(slots_controller: Arc<Mutex<SlotsController>>) -> GetAvailableSlotsUseCase {
+    pub fn with_slots_controller(slots_controller: Arc<Mutex<SlotsController>>, mongodb: &Database) -> GetAvailableSlotsUseCase {
         GetAvailableSlotsUseCase{
-            patient_appointment_repository: Box::new(DoctorAvailabilityPatientAppointmentRepository::new(slots_controller))
+            patient_appointment_repository: Box::new(DoctorAvailabilityPatientAppointmentRepository::new(slots_controller, mongodb))
         }
     }
 }
