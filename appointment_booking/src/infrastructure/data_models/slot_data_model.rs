@@ -1,7 +1,6 @@
 use bson::{oid::ObjectId, DateTime};
 use serde::{Deserialize, Serialize};
-use crate::domain::SlotEntity;
-use doctor_availability::responses::ResponseDoctorSlot;
+//use doctor_availability::responses::ResponseDoctorSlot;
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct SlotDataModel {
@@ -15,6 +14,8 @@ pub struct SlotDataModel {
     pub cost_in_cents: usize,
     pub reserved_at: Option<DateTime>
 }
+
+/*
 impl SlotDataModel {
     pub fn from(slot_response: &ResponseDoctorSlot) -> SlotDataModel {
         let reserved_at: Option<DateTime> = match slot_response.reserved_at {
@@ -34,6 +35,7 @@ impl SlotDataModel {
         }
     }
 }
+ */
 
 
 
