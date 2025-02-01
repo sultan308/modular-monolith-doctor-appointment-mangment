@@ -41,7 +41,7 @@ impl SlotsController {
         let found_doctor_slots = self.slots_services.get_all_bookable_slots().await?;
         Ok(found_doctor_slots.into_iter().map(ResponseDoctorSlot::from_slot).collect())
     }
-    pub async fn get_by_id(&self, slot_id: ObjectId, doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {
+    pub async fn get_by_id(&self, slot_id: ObjectId, _doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {
         let found_slot = self.slots_services.get_slot(slot_id).await?;
         Ok(ResponseDoctorSlot::from_slot(found_slot))
     }
