@@ -10,7 +10,15 @@ impl LoggingNotifier{
 
 impl LoggingNotifier{
     fn send_email_log(&self, email: &str, content: String ) {
-        println!("Sending email to: {email},\nemail content:'n{content}");
+        println!("Sending email to: {email}: ");
+        println!();
+        println!("--------- Email Start ---------");
+        println!();
+        println!("{content}");
+        println!();
+        println!("--------- Email End ---------");
+        println!();
+
 
     }
 }
