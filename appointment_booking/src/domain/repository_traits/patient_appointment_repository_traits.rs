@@ -1,4 +1,4 @@
-use crate::domain::entities::{AppointmentEntity,DoctorEntity, SlotEntity, PatientEntity};
+use crate::domain::entities::{AppointmentEntity, SlotEntity, PatientEntity};
 use anyhow::Result;
 use async_trait::async_trait;
 use bson::oid::ObjectId;
