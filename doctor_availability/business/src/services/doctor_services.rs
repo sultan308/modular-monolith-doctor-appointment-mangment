@@ -17,9 +17,9 @@ impl DoctorServices {
 }
 
 impl DoctorServices {
-    pub async fn create_doctor_service(&mut self, doctor_name: &str) -> Result<Doctor>{
+    pub async fn create_doctor_service(&mut self, doctor_name: &str, email:&str) -> Result<Doctor>{
         let new_id = ObjectId::new();
-        let new_doctor = Doctor::build(new_id, doctor_name);
+        let new_doctor = Doctor::build(new_id, doctor_name, email);
         let doctor_data = new_doctor.as_doctor_data_model();
         self.doctors_repo.create(&doctor_data).await?;
         Ok(new_doctor)

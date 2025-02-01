@@ -4,31 +4,38 @@ use crate::ObjectId;
 #[derive(Debug, Clone)]
 pub struct Doctor {
     id: ObjectId,
-    name : String
+    name : String,
+    email: String
 }
 
 impl Doctor {
-    pub fn build(id: ObjectId, name: &str) -> Doctor {
+    pub fn build(id: ObjectId, name: &str, email: &str) -> Doctor {
         Doctor{
             id,
-            name: String::from(name)
+            name: String::from(name),
+            email: String::from(email)
         }
     }
     pub fn from(doctor_data_model: DoctorDataModel) -> Doctor{
         Doctor{
             id: doctor_data_model._id,
-            name: doctor_data_model.name
+            name: doctor_data_model.name,
+            email: doctor_data_model.email
         }
     }
 
     pub fn as_doctor_data_model(&self) -> DoctorDataModel {
         DoctorDataModel{
             _id: self.id,
-            name: self.name.clone()
+            name: self.name.clone(),
+            email: self.email.clone()
         }
     }
     pub fn get_id(&self) -> ObjectId {
         self.id
+    }
+    pub fn get_email(&self) -> String {
+        self.email.clone()
     }
     pub fn get_full_name(&self) -> String {
         self.name.clone()
@@ -61,7 +68,8 @@ mod doctor_tests {
         let expected_name = "Hassan Ibrahim";
         let test_doctor_data_model = DoctorDataModel{
             _id: expected_id,
-            name: String::from(expected_name)
+            name: String::from(expected_name),
+            email: String::from("hasssan_ibrahim@email.com")
         };
         let test_doctor = Doctor::from(test_doctor_data_model);
 
@@ -75,10 +83,11 @@ mod doctor_tests {
         let expected_id = ObjectId::new();
         let expected_doctor_data_model = DoctorDataModel{
             _id: expected_id,
-           name: String::from("Hassan Ibrahim"),
+            name: String::from("Hassan Ibrahim"),
+            email: String::from("hasssan_ibrahim@email.com")
         };
 
-        let test_doctor = Doctor::build(expected_id, "Hassan Ibrahim");
+        let test_doctor = Doctor::build(expected_id, "Hassan Ibrahim", "hasssan_ibrahim@email.com");
 
         assert_eq!(test_doctor.as_doctor_data_model(), expected_doctor_data_model);
     }
@@ -86,7 +95,7 @@ mod doctor_tests {
     #[test]
     fn test_doctor_get_id(){
         let expected_id = ObjectId::new();
-        let test_doctor = Doctor::build(expected_id, "Hassan Ibrahim");
+        let test_doctor = Doctor::build(expected_id, "Hassan Ibrahim", "hasssan_ibrahim@email.com");
 
         assert_eq!(test_doctor.get_id(), expected_id);
     }
@@ -94,7 +103,7 @@ mod doctor_tests {
     #[test]
     fn test_doctor_get_full_name(){
         let expected_full_name = "Hassan Ibrahim";
-        let test_doctor = Doctor::build(ObjectId::new(), "Hassan Ibrahim");
+        let test_doctor = Doctor::build(ObjectId::new(), "Hassan Ibrahim", "hasssan_ibrahim@email.com");
 
         assert_eq!(test_doctor.get_full_name(), expected_full_name);
     }
@@ -102,7 +111,7 @@ mod doctor_tests {
     #[test]
     fn test_update_name(){
         let expected_full_name = "Hassan Ibrahim";
-        let mut test_doctor = Doctor::build(ObjectId::new(), "Hassan");
+        let mut test_doctor = Doctor::build(ObjectId::new(), "Hassan", "hasssan_ibrahim@email.com");
         test_doctor.update_name(expected_full_name);
         assert_eq!(test_doctor.get_full_name(), expected_full_name);
     }

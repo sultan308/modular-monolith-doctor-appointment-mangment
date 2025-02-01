@@ -20,8 +20,8 @@ impl DoctorsController {
 
     }
     pub async fn create_doctor (&mut self, create_doctor_payload: CreateDoctorPayload) ->  Result<ResponseDoctor>  {
-        let new_doctor_name: &str = &create_doctor_payload.name;
-        let new_doctor = self.doctor_services.create_doctor_service(new_doctor_name).await?;
+        let CreateDoctorPayload{ name, email }= &create_doctor_payload;
+        let new_doctor = self.doctor_services.create_doctor_service(name, email).await?;
         Ok(ResponseDoctor::from_doctor(new_doctor))
     }
     pub async fn delete_by_id(&mut self, doctor_id : ObjectId) -> Result<()> {
