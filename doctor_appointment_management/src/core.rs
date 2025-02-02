@@ -1,0 +1,3 @@
+mod appointments_repository_trait;
+mod appointment_entity;
+mod appointment_management_service;
