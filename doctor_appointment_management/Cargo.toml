@@ -8,3 +8,6 @@ bson = "2.13.0"
 chrono = "0.4.39"
 
 doctor_availability = {path = "../doctor_availability", version = "0.1.0"}
+shared = {path = "../shared", version = "0.1.0"}
+anyhow = "1.0.95"
+async-trait = "0.1.85"
