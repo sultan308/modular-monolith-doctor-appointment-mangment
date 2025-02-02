@@ -14,6 +14,43 @@ pub struct Appointment {
     time: bson::DateTime,
 }
 impl Appointment {
+    pub fn build( id: ObjectId,
+                  patient_contact_details: ContactData,
+                  time: bson::DateTime ) -> Appointment {
+        Appointment {
+            id,
+            patient_contact_details,
+            time,
+            status: AppointmentStatus::Booked
+        }
+
+    }
+    pub fn build_canceled_appointment( id: ObjectId,
+                                       patient_contact_details: ContactData,
+                                       canceled_at: bson::DateTime,
+                                       time: bson::DateTime ) -> Appointment {
+        Appointment {
+            id,
+            patient_contact_details,
+            time,
+            status: AppointmentStatus::Canceled(canceled_at)
+        }
+
+    }
+    pub fn build_completed_appointment( id: ObjectId,
+                                        patient_contact_details: ContactData,
+                                        completed_at: bson::DateTime,
+                                        time: bson::DateTime ) -> Appointment {
+        Appointment {
+            id,
+            patient_contact_details,
+            time,
+            status: AppointmentStatus::Completed(completed_at)
+        }
+
+    }
+}
+impl Appointment {
     pub fn is_completed(&self) -> bool{
         match self.status {
             AppointmentStatus::Completed(_) => true,
