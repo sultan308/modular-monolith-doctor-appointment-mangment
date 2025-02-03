@@ -51,31 +51,31 @@ impl Appointment {
     }
 }
 impl Appointment {
-    pub fn is_completed(&self) -> bool{
+    pub fn get_id(&self) -> ObjectId {self.id}
+    pub fn completed_at(&self) -> Option<bson::DateTime> {
         match self.status {
-            AppointmentStatus::Completed(_) => true,
-            _ => false
+            AppointmentStatus::Completed(at) => Some(at),
+            _ => None
         }
     }
-
-    pub fn is_canceled(&self) -> bool{
+    pub fn canceled_at(&self) -> Option<bson::DateTime> {
         match self.status {
-            AppointmentStatus::Canceled(_) => true,
-            _ => false
+            AppointmentStatus::Canceled(at) => Some(at),
+            _ => None
         }
     }
 }
 
 impl Appointment {
     pub fn complete(&mut self) {
-        if self.is_canceled() { panic!("Cannot complete a canceled appointment"); };
-        if self.is_completed() { panic!("Appointment already completed")};
+        if self.canceled_at().is_some() { panic!("Cannot complete a canceled appointment"); };
+        if self.completed_at().is_some() { panic!("Appointment already completed")};
         self.status = AppointmentStatus::Completed(bson::DateTime::now());
     }
 
     pub fn canceled(&mut self) {
-        if self.is_completed() { panic!("Cannot cancel a completed appointment"); };
-        if self.is_canceled() { panic!("Appointment already canceled")};
+        if self.completed_at().is_some(){ panic!("Cannot cancel a completed appointment"); };
+        if self.canceled_at().is_some(){ panic!("Appointment already canceled")};
         self.status = AppointmentStatus::Canceled(bson::DateTime::now());
     }
 }
