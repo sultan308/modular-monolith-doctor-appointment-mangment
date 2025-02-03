@@ -27,8 +27,8 @@ impl Appointment {
     }
     pub fn build_canceled_appointment( id: ObjectId,
                                        patient_contact_details: ContactData,
-                                       canceled_at: bson::DateTime,
-                                       time: bson::DateTime ) -> Appointment {
+                                       time: bson::DateTime,
+                                       canceled_at: bson::DateTime ) -> Appointment {
         Appointment {
             id,
             patient_contact_details,
@@ -39,8 +39,8 @@ impl Appointment {
     }
     pub fn build_completed_appointment( id: ObjectId,
                                         patient_contact_details: ContactData,
-                                        completed_at: bson::DateTime,
-                                        time: bson::DateTime ) -> Appointment {
+                                        time: bson::DateTime,
+                                        completed_at: bson::DateTime) -> Appointment {
         Appointment {
             id,
             patient_contact_details,
