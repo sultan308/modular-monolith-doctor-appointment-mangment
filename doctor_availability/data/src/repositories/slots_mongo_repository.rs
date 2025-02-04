@@ -78,10 +78,10 @@ impl SlotsRepositoryFilter {
     fn get_time_filter_document(&self)  -> Option<Document>{
         let mut time_filter_document = doc!();
         if self.time_before.is_some() {
-            time_filter_document.insert("$lt", self.time_before.unwrap());
+            time_filter_document.insert("$lte", self.time_before.unwrap());
         };
         if self.time_after.is_some() {
-            time_filter_document.insert("$gt", self.time_after.unwrap());
+            time_filter_document.insert("$gte", self.time_after.unwrap());
         };
         if time_filter_document.is_empty(){
             return None
