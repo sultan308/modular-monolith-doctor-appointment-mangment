@@ -16,7 +16,7 @@ impl ResponseAppointment {
         ResponseAppointment{
             id: appointment.get_id(),
             patient_name: appointment.get_patient_name().to_string(),
-            patient_email: appointment.get_patient_name().to_string(),
+            patient_email: appointment.get_patient_email().to_string(),
             start_time: appointment.get_appointment_time().to_chrono(),
             is_canceled: appointment.canceled_at().is_some(),
             is_completed: appointment.completed_at().is_some(),
