@@ -1,8 +1,9 @@
 use anyhow::Result;
-use bson::{oid::ObjectId, doc};
+use bson::{doc, Document, oid::ObjectId};
 use mongodb::{Collection, Database};
 
-use crate::core::{Appointment, AppointmentsRepositoryResult, AppointmentsRepositoryTrait};
+use crate::core::{Appointment, AppointmentsFilter,
+                  AppointmentsRepositoryResult, AppointmentsRepositoryTrait};
 
 mod slot_mongo_document;
 use slot_mongo_document::SlotMongoDocument;
@@ -44,6 +45,23 @@ impl MongoAppointmentsRepository {
         }
     }
 
+    fn appointments_filter_to_mongo_filter(appointments_filter: AppointmentsFilter) -> Document {
+        match appointments_filter {
+            AppointmentsFilter { doctor_id, from: Some(min), to: Some(max) } => {
+                doc! {"doctor_id" : doctor_id, "time": {"$gte": min, "$lte": max}}
+            },
+            AppointmentsFilter { doctor_id, from: Some(min), to: None } => {
+                doc! {doctor_id,"time": {"$gte": min}}
+            },
+            AppointmentsFilter { doctor_id, from: None, to: Some(max) } => {
+                doc! {doctor_id, "time": {"$lte": max}}
+            },
+            AppointmentsFilter { doctor_id, from: None, to: None } => {
+                doc! {doctor_id}
+            },
+        }
+    }
+
     async fn get_patient(&self, patient_id: ObjectId) -> Result<PatientMongoDocument>{
         let patient_document = self
             .patients_collection
@@ -66,10 +84,10 @@ impl AppointmentsRepositoryTrait for MongoAppointmentsRepository{
 
     }
 
-    async fn get_doctor_appointments(&self, doctor_id: ObjectId) -> AppointmentsRepositoryResult<Vec<Appointment>> {
+    async fn get_doctor_appointments(&self, filter: AppointmentsFilter) -> AppointmentsRepositoryResult<Vec<Appointment>> {
         let mut patients: std::collections::HashMap<ObjectId,PatientMongoDocument> =  std::collections::HashMap::new();
-
-        let cursor = self.slots_collection.find(doc! {"doctor_id": doctor_id}).await?;
+        let mongo_slots_filter = MongoAppointmentsRepository::appointments_filter_to_mongo_filter(filter);
+        let cursor = self.slots_collection.find(mongo_slots_filter).await?;
         let slot_documents: Vec<SlotMongoDocument> = cursor.try_collect().await?;
         let mut appointments: Vec<Appointment> = Vec::new();
 
