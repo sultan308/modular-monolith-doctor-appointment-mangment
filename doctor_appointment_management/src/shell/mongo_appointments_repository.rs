@@ -41,8 +41,8 @@ impl MongoAppointmentsRepository {
         let patient_contacts = ContactData::build(&patient.name,&patient.email);
         match (slot.canceled_at, slot.completed_at) {
             (None, None) => Appointment::build(slot._id,patient_contacts, slot.time),
-            (None, Some(completed_at)) => Appointment::build_canceled_appointment(slot._id,patient_contacts, slot.time,completed_at),
-            (Some(canceled_at), None) => Appointment::build_completed_appointment(slot._id,patient_contacts, slot.time,canceled_at),
+            (None, Some(completed_at)) => Appointment::build_completed_appointment(slot._id,patient_contacts, slot.time,completed_at),
+            (Some(canceled_at), None) => Appointment::build_canceled_appointment(slot._id,patient_contacts, slot.time,canceled_at),
             _ => panic!("Trying to load invalid appointment data")
         }
     }
