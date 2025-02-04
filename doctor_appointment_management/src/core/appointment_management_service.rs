@@ -15,20 +15,20 @@ impl AppointmentManagementService {
 }
 
 impl AppointmentManagementService {
-    async fn cancel_appointment(&self, appointment_id: ObjectId) -> Result<Appointment> {
+    pub async fn cancel_appointment(&self, appointment_id: ObjectId) -> Result<Appointment> {
         let mut appointment = self.appointments_repository.get_appointment(appointment_id).await?;
         appointment.canceled();
         self.appointments_repository.save_appointment_status(&appointment).await?;
         Ok(appointment)
     }
-    async fn complete_appointment(&self, appointment_id: ObjectId) -> Result<Appointment> {
+    pub async fn complete_appointment(&self, appointment_id: ObjectId) -> Result<Appointment> {
         let mut appointment = self.appointments_repository.get_appointment(appointment_id).await?;
         appointment.complete();
         self.appointments_repository.save_appointment_status(&appointment).await?;
         Ok(appointment)
     }
 
-    async fn get_all_doctor_appointments_in_range(&self, doctor_id: ObjectId, from: Option<DateTime>, to: Option<DateTime>) -> Result<Vec<Appointment>> {
+    pub async fn get_all_doctor_appointments_in_range(&self, doctor_id: ObjectId, from: Option<DateTime>, to: Option<DateTime>) -> Result<Vec<Appointment>> {
         let appointments_filter = AppointmentsFilter { doctor_id, from, to };
         let appointment = self.appointments_repository.get_doctor_appointments(appointments_filter).await?;
          Ok(appointment)
