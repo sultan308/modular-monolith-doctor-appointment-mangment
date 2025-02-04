@@ -3,7 +3,7 @@ use bson::oid::ObjectId;
 use chrono::{DateTime, Utc};
 use mongodb::Database;
 
-use crate::core::{Appointment, AppointmentManagementService};
+use crate::core::{AppointmentManagementService};
 use crate::shell::mongo_appointments_repository::MongoAppointmentsRepository;
 
 mod response_appointment;
