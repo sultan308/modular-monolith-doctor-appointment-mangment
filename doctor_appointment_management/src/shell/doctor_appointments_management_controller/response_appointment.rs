@@ -1,7 +1,8 @@
 use bson::oid::ObjectId;
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 use crate::core::Appointment;
-
+#[derive(Serialize,Deserialize)]
 pub struct ResponseAppointment {
     pub id: ObjectId,
     pub patient_name: String,
