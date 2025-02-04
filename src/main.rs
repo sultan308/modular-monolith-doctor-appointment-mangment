@@ -5,6 +5,7 @@ use std::sync::{Arc};
 use dotenv::dotenv;
 use futures::lock::Mutex;
 use appointment_booking::controllers::{AppointmentsController, PatientController};
+use doctor_appointment_management::{DoctorAppointmentsManagementController};
 use doctor_availability::controllers::{DoctorsController, SlotsController};
 use mongodb::{Client, Database};
 use mongodb::bson::DateTime;
@@ -13,6 +14,7 @@ use routers::{get_doctors_router, get_doctor_slots_router, get_patients_router};
 #[derive(Clone)]
 struct AppState {
     pub appointments_controller: Arc<Mutex<AppointmentsController>>,
+    pub doctor_appointments_management_controller:Arc<Mutex<DoctorAppointmentsManagementController>>,
     pub doctors_controller: Arc<Mutex<DoctorsController>>,
     pub doctor_slots_controller: Arc<Mutex<SlotsController>>,
     pub patient_controllers: Arc<Mutex<PatientController>>,
@@ -20,6 +22,7 @@ struct AppState {
 }
 fn get_app_state(db: &Database) -> AppState {
     let doctors_controller =  Arc::new(Mutex::new(DoctorsController::with_mongo_db(&db)));
+    let doctor_appointments_management_controller = Arc::new(Mutex::new(DoctorAppointmentsManagementController::with_mongo_db(&db)));
     let doctor_slots_controller = Arc::new(Mutex::new(SlotsController::with_mongo_db(&db)));
     let patient_controllers =  Arc::new(Mutex::new(PatientController::with_mongo_db(&db)));
 
@@ -27,6 +30,7 @@ fn get_app_state(db: &Database) -> AppState {
 
     AppState {
         appointments_controller,
+        doctor_appointments_management_controller,
         doctors_controller,
         doctor_slots_controller,
         patient_controllers,
