@@ -50,16 +50,22 @@ impl MongoAppointmentsRepository {
     fn appointments_filter_to_mongo_filter(appointments_filter: AppointmentsFilter) -> Document {
         match appointments_filter {
             AppointmentsFilter { doctor_id, from: Some(min), to: Some(max) } => {
-                doc! {"doctor_id" : doctor_id, "time": {"$gte": min, "$lte": max}}
+                doc! {
+                    "reserving_patient_id": {"$exists": true},
+                    "doctor_id" : doctor_id, "time": {"$gte": min, "$lte": max}}
             },
             AppointmentsFilter { doctor_id, from: Some(min), to: None } => {
-                doc! {"doctor_id": doctor_id,"time": {"$gte": min}}
+                doc! {
+                    "reserving_patient_id": {"$exists": true},
+                    "doctor_id": doctor_id,"time": {"$gte": min}}
             },
             AppointmentsFilter { doctor_id, from: None, to: Some(max) } => {
-                doc! {"doctor_id": doctor_id, "time": {"$lte": max}}
+                doc! {
+                    "reserving_patient_id": {"$exists": true},
+                    "doctor_id": doctor_id, "time": {"$lte": max}}
             },
             AppointmentsFilter { doctor_id, from: None, to: None } => {
-                doc! {"doctor_id": doctor_id}
+                doc! {"reserving_patient_id": {"$exists": true}, "doctor_id": doctor_id}
             },
         }
     }
@@ -78,7 +84,7 @@ impl AppointmentsRepositoryTrait for MongoAppointmentsRepository{
     async fn get_appointment(&self, appointment_id: ObjectId) -> AppointmentsRepositoryResult<Appointment> {
         let slot_document = self
             .slots_collection
-            .find_one(doc! { "_id": appointment_id })
+            .find_one(doc! { "_id": appointment_id, "reserving_patient_id": {"$exists": true}})
             .await?.unwrap();
         let patient_document = self.get_patient(slot_document.reserving_patient_id).await?;
         let appointment = MongoAppointmentsRepository::appointment_factory(slot_document, &patient_document);
@@ -118,7 +124,7 @@ impl AppointmentsRepositoryTrait for MongoAppointmentsRepository{
             (None,None) => doc! { "canceled_at": bson::Bson::Null,  "completed_at": bson::Bson::Null},
         };
 
-        let filter = doc! { "_id": appointment.get_id()};
+        let filter = doc! { "_id": appointment.get_id(), "reserving_patient_id": {"$exists": true}};
         let update = doc! { "$set": update_doc};
         self.slots_collection.update_one(filter, update).await?;
         Ok(())
