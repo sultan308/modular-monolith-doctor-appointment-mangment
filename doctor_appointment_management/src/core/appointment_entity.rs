@@ -52,6 +52,8 @@ impl Appointment {
 }
 impl Appointment {
     pub fn get_id(&self) -> ObjectId {self.id}
+    pub fn get_patient_name(&self) -> &str {self.patient_contact_details.get_name()}
+    pub fn get_patient_email(&self) -> &str{self.patient_contact_details.get_email()}
     pub fn completed_at(&self) -> Option<bson::DateTime> {
         match self.status {
             AppointmentStatus::Completed(at) => Some(at),
