@@ -1,5 +1,7 @@
 use anyhow::Result;
+use async_trait::async_trait;
 use bson::{doc, Document, oid::ObjectId};
+use futures::TryStreamExt;
 use mongodb::{Collection, Database};
 
 use crate::core::{Appointment, AppointmentsFilter,
@@ -51,13 +53,13 @@ impl MongoAppointmentsRepository {
                 doc! {"doctor_id" : doctor_id, "time": {"$gte": min, "$lte": max}}
             },
             AppointmentsFilter { doctor_id, from: Some(min), to: None } => {
-                doc! {doctor_id,"time": {"$gte": min}}
+                doc! {"doctor_id": doctor_id,"time": {"$gte": min}}
             },
             AppointmentsFilter { doctor_id, from: None, to: Some(max) } => {
-                doc! {doctor_id, "time": {"$lte": max}}
+                doc! {"doctor_id": doctor_id, "time": {"$lte": max}}
             },
             AppointmentsFilter { doctor_id, from: None, to: None } => {
-                doc! {doctor_id}
+                doc! {"doctor_id": doctor_id}
             },
         }
     }
@@ -71,7 +73,7 @@ impl MongoAppointmentsRepository {
         Ok(patient_document.unwrap())
     }
 }
-
+#[async_trait]
 impl AppointmentsRepositoryTrait for MongoAppointmentsRepository{
     async fn get_appointment(&self, appointment_id: ObjectId) -> AppointmentsRepositoryResult<Appointment> {
         let slot_document = self
@@ -111,12 +113,12 @@ impl AppointmentsRepositoryTrait for MongoAppointmentsRepository{
     async fn save_appointment_status(&self, appointment: &Appointment) -> AppointmentsRepositoryResult<()> {
         let update_doc = match (appointment.completed_at(),appointment.canceled_at()) {
             (Some(_), Some(_)) => panic!("Trying to save invalid appointment data"),
-            (Some(completed_at), None) => doc! { "completed_at": completed_at, "canceled_at": None },
-            (None, Some(canceled_at)) => doc! { "canceled_at": canceled_at,  "completed_at": None},
-            (None,None) => doc! { "canceled_at": None,  "completed_at": None},
+            (Some(completed_at), None) => doc! { "completed_at": completed_at, "canceled_at": bson::Bson::Null },
+            (None, Some(canceled_at)) => doc! { "canceled_at": canceled_at,  "completed_at": bson::Bson::Null},
+            (None,None) => doc! { "canceled_at": bson::Bson::Null,  "completed_at": bson::Bson::Null},
         };
 
-        let filter = doc! { "_id": appointment};
+        let filter = doc! { "_id": appointment.get_id()};
         let update = doc! { "$set": update_doc};
         self.slots_collection.update_one(filter, update).await?;
         Ok(())
