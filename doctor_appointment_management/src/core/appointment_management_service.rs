@@ -1,7 +1,8 @@
 use anyhow::Result;
+use bson::DateTime;
 use bson::oid::ObjectId;
 use crate::core::appointment_entity::Appointment;
-use crate::core::appointments_repository_trait::AppointmentsRepositoryTrait;
+use crate::core::appointments_repository_trait::{AppointmentsFilter, AppointmentsRepositoryTrait};
 
 pub struct AppointmentManagementService {
     appointments_repository: Box<dyn AppointmentsRepositoryTrait>
@@ -27,8 +28,9 @@ impl AppointmentManagementService {
         Ok(appointment)
     }
 
-    async fn get_all_upcoming_appointment(&self, doctor_id: ObjectId) -> Result<Vec<Appointment>> {
-        let appointment = self.appointments_repository.get_doctor_appointments(doctor_id).await?;
+    async fn get_all_doctor_appointments_in_range(&self, doctor_id: ObjectId, from: Option<DateTime>, to: Option<DateTime>) -> Result<Vec<Appointment>> {
+        let appointments_filter = AppointmentsFilter { doctor_id, from, to };
+        let appointment = self.appointments_repository.get_doctor_appointments(appointments_filter).await?;
          Ok(appointment)
     }
 }
