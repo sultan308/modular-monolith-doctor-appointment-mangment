@@ -1,15 +1,16 @@
-use crate::models::Slot;
-use crate::{ObjectId,DateTime};
-use data::repositories::{SlotsRepository, SlotsMongoRepository, SlotsRepositoryFilter};
 use anyhow::Result;
-use data::MongoDataBase;
+use bson::{DateTime,oid::ObjectId};
+use mongodb::Database;
+
+use crate::business::models::Slot;
+use crate::data::{SlotsRepository, SlotsMongoRepository, SlotsRepositoryFilter};
 
 pub struct SlotsServices {
     slots_repo: Box<dyn SlotsRepository>
 }
 
 impl SlotsServices {
-    pub fn with_mongo_db(mongo_data_base: &MongoDataBase) -> SlotsServices {
+    pub fn with_mongo_db(mongo_data_base: &Database) -> SlotsServices {
         SlotsServices {
             slots_repo: Box::new(SlotsMongoRepository::new(mongo_data_base))
         }

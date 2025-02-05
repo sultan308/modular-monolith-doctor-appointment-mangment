@@ -1,11 +1,12 @@
 use anyhow::Result;
-use crate::ObjectId;
+use bson::oid::ObjectId;
+use mongodb::Database;
 
-use crate::payloads::{CreateDoctorPayload, UpdateDoctorPayload};
-use crate::responses::{ResponseDoctor};
+use crate::application::payloads::{CreateDoctorPayload, UpdateDoctorPayload};
+use crate::application::responses::{ResponseDoctor};
 
-use business::services::DoctorServices;
-use business::MongoDataBase;
+use crate::business::DoctorServices;
+
 
 
 pub struct DoctorsController {
@@ -13,7 +14,7 @@ pub struct DoctorsController {
 }
 
 impl DoctorsController {
-    pub fn with_mongo_db(mongo_data_base: &MongoDataBase) -> DoctorsController {
+    pub fn with_mongo_db(mongo_data_base: &Database) -> DoctorsController {
         DoctorsController {
             doctor_services: DoctorServices::with_mongo_db(mongo_data_base)
         }

@@ -1,11 +1,12 @@
-use async_trait::async_trait;
 use anyhow::Result;
-use bson::doc;
-use crate::{DateTime,ObjectId};
-use crate::data_models::SlotDataModel;
-use serde_with::{skip_serializing_none};
-pub type SlotsRepositoryResult<T> = Result<T>;
+use async_trait::async_trait;
+use bson::{DateTime,doc,oid::ObjectId};
 use serde::{Deserialize, Serialize};
+use serde_with::{skip_serializing_none};
+
+use crate::data::data_models::SlotDataModel;
+
+pub type SlotsRepositoryResult<T> = Result<T>;
 
 #[skip_serializing_none]
 #[derive(Debug, Deserialize, Serialize, Clone)]

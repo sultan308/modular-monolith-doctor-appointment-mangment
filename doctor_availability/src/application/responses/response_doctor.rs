@@ -1,7 +1,7 @@
+use bson::oid::ObjectId;
 use serde::{Serialize, Deserialize};
-use business::models::Doctor;
-use crate::ObjectId;
 
+use crate::business::Doctor;
 #[derive(Serialize,Deserialize)]
 pub struct ResponseDoctor {
     id: ObjectId,

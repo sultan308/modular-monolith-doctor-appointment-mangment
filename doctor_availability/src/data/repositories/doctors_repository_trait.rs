@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use anyhow::Result;
-use crate::ObjectId;
-use crate::data_models::DoctorDataModel;
+use bson::{oid::ObjectId};
+use crate::data::data_models::DoctorDataModel;
 pub type DoctorsRepositoryResult<T> = Result<T>;
 
 

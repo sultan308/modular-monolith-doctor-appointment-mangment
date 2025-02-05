@@ -1,14 +1,18 @@
-use crate::models::Doctor;
-use data::repositories::{DoctorsRepository, DoctorsMongoRepository};
 use anyhow::Result;
-use crate::{MongoDataBase,ObjectId};
+use bson::oid::ObjectId;
+use mongodb::Database;
+
+use crate::business::models::Doctor;
+use crate::data::{DoctorsRepository, DoctorsMongoRepository};
+
+
 
 pub struct DoctorServices {
     doctors_repo: Box<dyn DoctorsRepository>
 }
 
 impl DoctorServices {
-    pub fn with_mongo_db(mongo_data_base: &MongoDataBase) -> DoctorServices {
+    pub fn with_mongo_db(mongo_data_base: &Database) -> DoctorServices {
         DoctorServices{
             doctors_repo: Box::new(DoctorsMongoRepository::new(mongo_data_base))
         }

@@ -1,13 +1,11 @@
-use std::sync::Arc;
 use async_trait::async_trait;
-use crate::repositories::{SlotsRepository, SlotsRepositoryResult};
-use mongodb::{Collection, Database};
-use bson::{doc, Document};
-use crate::{ObjectId};
-use crate::data_models::SlotDataModel;
+use bson::{doc, Document, oid::ObjectId};
 use futures::TryStreamExt;
-use crate::repositories::slots_repository_trait::SlotsRepositoryFilter;
+use mongodb::{Collection, Database};
+use std::sync::Arc;
 
+use crate::data::repositories::{SlotsRepository, SlotsRepositoryResult, SlotsRepositoryFilter};
+use crate::data::data_models::SlotDataModel;
 const DEFAULT_SLOTS_COLLECTION_NAME: &str = "slots";
 
 

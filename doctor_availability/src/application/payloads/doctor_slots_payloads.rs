@@ -1,9 +1,8 @@
-use serde::Deserialize;
 use chrono::{DateTime, Utc};
-
+use serde::Deserialize;
 #[derive(Deserialize)]
 pub struct AddSlotPayload {
-    pub time: DateTime<Utc>, // The type should include a timezone (like Utc)
+    pub time: DateTime<Utc>,
     pub duration_in_min: u16,
     pub cost_cents: usize,
 }

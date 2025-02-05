@@ -1,5 +1,5 @@
-use data::data_models::DoctorDataModel;
-use crate::ObjectId;
+use bson::oid::ObjectId;
+use crate::data::DoctorDataModel;
 
 #[derive(Debug, Clone)]
 pub struct Doctor {

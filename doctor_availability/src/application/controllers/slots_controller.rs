@@ -1,12 +1,12 @@
 use anyhow::Result;
-use crate::{DateTime,ObjectId};
+use bson::{DateTime, oid::ObjectId};
+use mongodb::Database;
 
-use crate::payloads::{AddSlotPayload};
-use crate::responses::{ResponseDoctorSlot};
+use crate::application::payloads::{AddSlotPayload};
+use crate::application::responses::{ResponseDoctorSlot};
 
-use business::models::Slot;
-use business::services::SlotsServices;
-use business::MongoDataBase;
+use crate::business::{Slot,SlotsServices};
+
 
 
 pub struct SlotsController {
@@ -14,7 +14,7 @@ pub struct SlotsController {
 }
 
 impl SlotsController {
-    pub fn with_mongo_db(mongo_data_base: &MongoDataBase) -> SlotsController {
+    pub fn with_mongo_db(mongo_data_base: &Database) -> SlotsController {
         SlotsController {
             slots_services: SlotsServices::with_mongo_db(mongo_data_base)
         }

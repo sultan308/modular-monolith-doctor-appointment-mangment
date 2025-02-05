@@ -1,6 +1,5 @@
-use data::data_models::SlotDataModel;
-use crate::{ObjectId,DateTime};
-
+use bson::{DateTime, oid::ObjectId};
+use crate::data::SlotDataModel;
 
 #[derive(Debug, Clone)]
 pub struct Slot {

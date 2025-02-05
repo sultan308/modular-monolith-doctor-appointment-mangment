@@ -1,7 +1,9 @@
 use chrono::{DateTime, Utc};
+use bson::oid::ObjectId;
 use serde::{Serialize, Deserialize};
-use business::models::Slot;
-use crate::{ObjectId};
+
+use crate::business::Slot;
+
 #[derive(Serialize,Deserialize)]
 pub struct ResponseDoctorSlot {
     pub id: ObjectId,

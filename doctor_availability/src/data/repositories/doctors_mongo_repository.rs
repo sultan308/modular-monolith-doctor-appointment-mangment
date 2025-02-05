@@ -1,12 +1,11 @@
-use std::sync::Arc;
 use async_trait::async_trait;
-use crate::repositories::{DoctorsRepository, DoctorsRepositoryResult};
-use mongodb::{Collection, Database};
-use bson::doc;
-use crate::ObjectId;
-use crate::data_models::DoctorDataModel;
+use bson::{doc, oid::ObjectId};
 use futures::TryStreamExt;
+use std::sync::Arc;
+use mongodb::{Collection, Database};
 
+use crate::data::data_models::DoctorDataModel;
+use crate::data::repositories::{DoctorsRepository, DoctorsRepositoryResult};
 const DEFAULT_DOCTORS_COLLECTION_NAME: &str = "doctors";
 
 
