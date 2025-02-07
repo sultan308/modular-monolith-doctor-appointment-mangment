@@ -23,7 +23,7 @@ impl fmt::Display for DoctorAppointmentManagementError {
 
             DoctorAppointmentManagementError::AppointmentNotFound(appointment_id) => write!(f, "DoctorAppointmentManagementError::AppointmentNotFound: Couldn't find an appointment with id of {appointment_id}."),
 
-            DoctorAppointmentManagementError::InvalidAppointmentFilter(invalid_filter, reason) => write!(f, "DoctorAppointmentManagementError::InvalidAppointmentFilter: {reason}"),
+            DoctorAppointmentManagementError::InvalidAppointmentFilter(_invalid_filter, reason) => write!(f, "DoctorAppointmentManagementError::InvalidAppointmentFilter: {reason}"),
 
         }
     }
