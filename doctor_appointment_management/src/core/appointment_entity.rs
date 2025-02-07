@@ -1,12 +1,12 @@
 use bson::{DateTime, oid::ObjectId};
 use shared::types::ContactData;
-
+#[derive(Debug)]
 enum AppointmentStatus {
     Booked,
     Completed(bson::DateTime),
     Canceled(bson::DateTime)
 }
-
+#[derive(Debug)]
 pub struct Appointment {
     id: ObjectId,
     patient_contact_details: ContactData,
