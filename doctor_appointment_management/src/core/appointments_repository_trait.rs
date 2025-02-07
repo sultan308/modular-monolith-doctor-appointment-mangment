@@ -4,7 +4,7 @@ use bson::{DateTime, oid::ObjectId};
 use crate::core::appointment_entity::Appointment;
 
 pub type AppointmentsRepositoryResult<T> = Result<T>;
-
+#[derive(Debug)]
 pub struct AppointmentsFilter {
     pub doctor_id: ObjectId,
     pub from : Option<DateTime>,
