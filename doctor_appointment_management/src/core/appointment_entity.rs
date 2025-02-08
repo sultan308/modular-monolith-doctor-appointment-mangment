@@ -1,5 +1,7 @@
 use bson::{DateTime, oid::ObjectId};
 use shared::types::ContactData;
+
+use crate::core::doctor_appointment_management_error::DoctorAppointmentManagementError;
 #[derive(Debug)]
 enum AppointmentStatus {
     Booked,
@@ -70,15 +72,30 @@ impl Appointment {
 }
 
 impl Appointment {
-    pub fn complete(&mut self) {
-        if self.canceled_at().is_some() { panic!("Cannot complete a canceled appointment"); };
-        if self.completed_at().is_some() { panic!("Appointment already completed")};
-        self.status = AppointmentStatus::Completed(bson::DateTime::now());
-    }
+    pub fn complete(mut self) -> Result<Appointment, DoctorAppointmentManagementError>{
 
-    pub fn canceled(&mut self) {
-        if self.completed_at().is_some(){ panic!("Cannot cancel a completed appointment"); };
-        if self.canceled_at().is_some(){ panic!("Appointment already canceled")};
+        if self.canceled_at().is_some() {
+            let reason  = "cannot complete a canceled appointment".to_string();
+            return Err(DoctorAppointmentManagementError::FailedToCompleteAppointment(self,reason))
+        };
+        if self.completed_at().is_some() {
+            let reason  = "appointment already completed".to_string();
+            return Err(DoctorAppointmentManagementError::FailedToCompleteAppointment(self,reason))
+        };
+        self.status = AppointmentStatus::Completed(bson::DateTime::now());
+        Ok(self)
+    }
+    pub fn cancel(mut self) -> Result<Appointment, DoctorAppointmentManagementError>{
+
+        if self.completed_at().is_some(){
+            let reason  = "can't cancel a completed appointment".to_string();
+            return Err(DoctorAppointmentManagementError::FailedToCompleteAppointment(self,reason))
+        };
+        if self.canceled_at().is_some() {
+            let reason  = "appointment already canceled".to_string();
+            return Err(DoctorAppointmentManagementError::FailedToCompleteAppointment(self,reason))
+        };
         self.status = AppointmentStatus::Canceled(bson::DateTime::now());
+        Ok(self)
     }
 }
