@@ -1,7 +1,9 @@
 mod appointment_entity;
 mod appointment_management_service;
 mod appointments_repository_trait;
+mod doctor_appointment_management_error;
 
 pub use appointment_entity::Appointment;
 pub use appointment_management_service::AppointmentManagementService;
-pub use appointments_repository_trait::{AppointmentsFilter, AppointmentsRepositoryTrait, AppointmentsRepositoryResult};
+pub use appointments_repository_trait::{AppointmentsFilter, AppointmentsRepositoryTrait};
+pub use doctor_appointment_management_error::{DoctorAppointmentManagementError,DoctorAppointmentManagementResult};
