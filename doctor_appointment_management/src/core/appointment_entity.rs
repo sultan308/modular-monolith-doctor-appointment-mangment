@@ -89,11 +89,11 @@ impl Appointment {
 
         if self.completed_at().is_some(){
             let reason  = "can't cancel a completed appointment".to_string();
-            return Err(DoctorAppointmentManagementError::FailedToCompleteAppointment(self,reason))
+            return Err(DoctorAppointmentManagementError::FailedToCancelAppointment(self,reason))
         };
         if self.canceled_at().is_some() {
             let reason  = "appointment already canceled".to_string();
-            return Err(DoctorAppointmentManagementError::FailedToCompleteAppointment(self,reason))
+            return Err(DoctorAppointmentManagementError::FailedToCancelAppointment(self,reason))
         };
         self.status = AppointmentStatus::Canceled(bson::DateTime::now());
         Ok(self)
