@@ -43,13 +43,13 @@ impl std::fmt::Display for ApplicationError {
                 write!(f,"ApplicationError::InvalidRequestPayload: {err}")
             },
             ApplicationError::InvalidOperation(msg, err) => {
-                write!(f,"ApplicationError::InvalidRequestPayload: {err}")
+                write!(f,"ApplicationError::InvalidOperation: {err}")
             },
             ApplicationError::RequestNotFound(msg, err) => {
-                write!(f,"ApplicationError::InvalidRequestPayload: {err}")
+                write!(f,"ApplicationError::RequestNotFound: {err}")
             },
             ApplicationError::InternalServerError( err) => {
-                write!(f,"ApplicationError::InvalidRequestPayload: {err}")
+                write!(f,"ApplicationError::InternalServerError: {err}")
             },
         }
     }
