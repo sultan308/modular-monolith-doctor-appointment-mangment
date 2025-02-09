@@ -2,7 +2,7 @@ use http::StatusCode;
 
 use crate::errors::error_payload::ErrorPayload;
 
-#[derive(Clone,Debug)]
+#[derive(Debug)]
 pub enum ApplicationError {
     InvalidRequestPayload(String, Box<dyn std::error::Error + Send+ Sync>),
     InvalidOperation(String, Box<dyn std::error::Error + Send+ Sync>),
