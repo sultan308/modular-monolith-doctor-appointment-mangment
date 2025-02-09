@@ -1,4 +1,7 @@
-use http::StatusCode;
+use axum::body::Body;
+use axum::http::{StatusCode};
+use axum::Json;
+use axum::response::{Response, IntoResponse};
 
 use crate::errors::error_payload::ErrorPayload;
 
@@ -56,3 +59,12 @@ impl std::fmt::Display for ApplicationError {
 }
 
 impl std::error::Error  for ApplicationError {}
+
+impl IntoResponse for ApplicationError {
+    fn into_response(self) -> Response<Body> {
+        let status_code = self.get_http_status_code();
+        let response = self.get_json_serializable_payload();
+        (status_code, Json(response)).into_response()
+
+    }
+}
