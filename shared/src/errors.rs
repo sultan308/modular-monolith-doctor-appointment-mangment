@@ -1,14 +1,9 @@
-struct ErrorBody {
-    message: String
-}
+mod application_error;
+mod error_payload;
+mod to_application_error;
 
-pub enum ApplicationError {
-    InvalidRequestPayload(String),
-    InvalidOperation(String),
-    RequestNotFound(String),
-    InternalServerError(String),
-}
+pub use application_error::ApplicationError;
+pub use error_payload::ErrorPayload;
+pub use to_application_error::ToApplicationError;
 
-pub trait ToApplicationError {
-    fn to_application_error(&self) -> ApplicationError;
-}
+pub type ApplicationResult<T> = Result<T, ApplicationError>;
