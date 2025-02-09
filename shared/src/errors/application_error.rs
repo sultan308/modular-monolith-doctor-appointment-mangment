@@ -42,13 +42,13 @@ impl ApplicationError {
 impl std::fmt::Display for ApplicationError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            ApplicationError::InvalidRequestPayload(msg, err) => {
+            ApplicationError::InvalidRequestPayload(_msg, err) => {
                 write!(f,"ApplicationError::InvalidRequestPayload: {err}")
             },
-            ApplicationError::InvalidOperation(msg, err) => {
+            ApplicationError::InvalidOperation(_msg, err) => {
                 write!(f,"ApplicationError::InvalidOperation: {err}")
             },
-            ApplicationError::RequestNotFound(msg, err) => {
+            ApplicationError::RequestNotFound(_msg, err) => {
                 write!(f,"ApplicationError::RequestNotFound: {err}")
             },
             ApplicationError::InternalServerError( err) => {
