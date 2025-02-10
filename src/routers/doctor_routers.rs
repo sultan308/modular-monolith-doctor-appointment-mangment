@@ -17,8 +17,7 @@ pub fn get_doctors_router(app_state: AppState) -> Router {
             .post(create_doctor_handler))
 
         .route("/doctors/{doctor_id}", get(get_doctor_handler)
-            .put(update_doctor_handler)
-            .delete(delete_doctor_handler))
+            .put(update_doctor_handler))
         .route("/doctors/{doctor_id}/appointments",get(get_doctor_appointments))
         .route("/doctors/{doctor_id}/appointments/{appointment_id}/cancel",post(cancel_doctor_appointment))
         .route("/doctors/{doctor_id}/appointments/{appointment_id}/complete",post(complete_doctor_appointment))
@@ -52,13 +51,6 @@ async fn get_doctors(State(app_state): State<AppState>) -> (StatusCode, Json<Vec
     let doctors_controller = &app_state.doctors_controller.lock().await;
     let response_doctors = doctors_controller.get_all().await.unwrap();
     (StatusCode::OK, Json::from(response_doctors))
-}
-
-async fn delete_doctor_handler(State(app_state): State<AppState>,
-                               Path(doctor_id): Path<ObjectId>) -> StatusCode{
-    let mut doctors_controller = app_state.doctors_controller.lock().await;
-    doctors_controller.delete_by_id(doctor_id).await.unwrap();
-    StatusCode::NO_CONTENT
 }
 async fn get_doctor_appointments(State(app_state): State<AppState>,
                                 Path(doctor_id): Path<ObjectId>) -> ApplicationResult<(StatusCode, Json<Vec<ResponseAppointment>>)>{
