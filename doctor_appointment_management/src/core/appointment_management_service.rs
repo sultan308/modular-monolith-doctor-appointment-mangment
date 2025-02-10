@@ -1,4 +1,3 @@
-use anyhow::Result;
 use bson::DateTime;
 use bson::oid::ObjectId;
 use crate::core::appointment_entity::Appointment;
@@ -17,13 +16,13 @@ impl AppointmentManagementService {
 
 impl AppointmentManagementService {
     pub async fn cancel_appointment(&self, appointment_id: ObjectId) -> DoctorAppointmentManagementResult<Appointment> {
-        let mut appointment = self.appointments_repository.get_appointment(appointment_id).await?;
+        let appointment = self.appointments_repository.get_appointment(appointment_id).await?;
         let appointment = appointment.cancel()?;
         self.appointments_repository.save_appointment_status(&appointment).await?;
         Ok(appointment)
     }
     pub async fn complete_appointment(&self, appointment_id: ObjectId) -> DoctorAppointmentManagementResult<Appointment> {
-        let mut appointment = self.appointments_repository.get_appointment(appointment_id).await?;
+        let appointment = self.appointments_repository.get_appointment(appointment_id).await?;
         let appointment = appointment.complete()?;
         self.appointments_repository.save_appointment_status(&appointment).await?;
         Ok(appointment)
