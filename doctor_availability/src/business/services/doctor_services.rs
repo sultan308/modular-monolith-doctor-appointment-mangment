@@ -30,7 +30,7 @@ impl DoctorServices {
     }
     pub async fn get_doctor_by_id(&self, doctor_id: ObjectId) -> Result<Doctor>{
         let doctor_data = self.doctors_repo.load(doctor_id).await?;
-        let doctor = Doctor::from(doctor_data.unwrap());
+        let doctor = Doctor::from(doctor_data);
         Ok(doctor)
     }
     pub async fn get_all_doctors(&self) -> Result<Vec<Doctor>>{

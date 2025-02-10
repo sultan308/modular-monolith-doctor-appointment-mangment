@@ -43,7 +43,7 @@ impl SlotsServices {
 
     pub async fn get_slot(&self, slot_id: ObjectId) -> Result<Slot>{
         let slot_data = self.slots_repo.load(slot_id).await?;
-        let slot = Slot::from(slot_data.unwrap());
+        let slot = Slot::from(slot_data);
         Ok(slot)
     }
     pub async fn get_all_doctor_slots(&self, doctor_id: ObjectId) -> Result<Vec<Slot>>{
