@@ -1,4 +1,3 @@
-use anyhow::Result;
 use async_trait::async_trait;
 use bson::{doc, Document, oid::ObjectId};
 use futures::TryStreamExt;
