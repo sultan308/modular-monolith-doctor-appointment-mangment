@@ -1,15 +1,13 @@
 use async_trait::async_trait;
-use anyhow::Result;
 use bson::{oid::ObjectId};
 use crate::data::data_models::DoctorDataModel;
-pub type DoctorsRepositoryResult<T> = Result<T>;
+use crate::data::repositories::repository_error::RepositoryResult;
 
 
 #[async_trait]
 pub trait DoctorsRepository: Sync + Send {
-    async fn delete(&mut self, doctor_id: ObjectId) -> DoctorsRepositoryResult<()>;
-    async fn list(&self) -> DoctorsRepositoryResult<Vec<DoctorDataModel>>;
-    async fn load(&self, doctor_id: ObjectId) -> DoctorsRepositoryResult<Option<DoctorDataModel>>;
-    async fn create(&mut self, doctor_data_model: &DoctorDataModel) -> DoctorsRepositoryResult<ObjectId>;
-    async fn update(&mut self, doctor_data_model: &DoctorDataModel) -> DoctorsRepositoryResult<()>;
+    async fn list(&self) -> RepositoryResult<Vec<DoctorDataModel>>;
+    async fn load(&self, doctor_id: ObjectId) -> RepositoryResult<DoctorDataModel>;
+    async fn create(&mut self, doctor_data_model: &DoctorDataModel) -> RepositoryResult<ObjectId>;
+    async fn update(&mut self, doctor_data_model: &DoctorDataModel) -> RepositoryResult<()>;
 }
