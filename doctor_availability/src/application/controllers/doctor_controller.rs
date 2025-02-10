@@ -25,10 +25,6 @@ impl DoctorsController {
         let new_doctor = self.doctor_services.create_doctor_service(name, email).await?;
         Ok(ResponseDoctor::from_doctor(new_doctor))
     }
-    pub async fn delete_by_id(&mut self, doctor_id : ObjectId) -> Result<()> {
-        self.doctor_services.delete_doctor_by_id(doctor_id).await?;
-        Ok(())
-    }
     pub async fn get_all(&self) -> Result<Vec<ResponseDoctor>> {
         let found_doctor = self.doctor_services.get_all_doctors().await?;
         Ok(found_doctor.into_iter().map(ResponseDoctor::from_doctor).collect())

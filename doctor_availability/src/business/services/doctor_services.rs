@@ -28,12 +28,6 @@ impl DoctorServices {
         self.doctors_repo.create(&doctor_data).await?;
         Ok(new_doctor)
     }
-
-    pub async fn delete_doctor_by_id(&mut self, doctor_id: ObjectId) -> Result<()>{
-        let _res = self.doctors_repo.delete(doctor_id).await?;
-        Ok(())
-    }
-
     pub async fn get_doctor_by_id(&self, doctor_id: ObjectId) -> Result<Doctor>{
         let doctor_data = self.doctors_repo.load(doctor_id).await?;
         let doctor = Doctor::from(doctor_data.unwrap());
