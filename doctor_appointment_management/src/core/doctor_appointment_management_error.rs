@@ -31,7 +31,7 @@ impl fmt::Display for DoctorAppointmentManagementError {
 
             DoctorAppointmentManagementError::InvalidAppointmentFilter(_invalid_filter, reason) => write!(f, "DoctorAppointmentManagementError::InvalidAppointmentFilter: {reason}"),
 
-            DoctorAppointmentManagementError::AppointmentsRepositoryError( (internal_err)) => write!(f, "DoctorAppointmentManagementError::AppointmentsRepositoryError: {}", internal_err.to_string()),
+            DoctorAppointmentManagementError::AppointmentsRepositoryError( internal_err) => write!(f, "DoctorAppointmentManagementError::AppointmentsRepositoryError: {}", internal_err.to_string()),
 
             DoctorAppointmentManagementError::InvalidDataReturnedFromSource => write!(f, "DoctorAppointmentManagementError::InvalidDataReturnedFromSource: found invalid data when loading from source!"),
 
