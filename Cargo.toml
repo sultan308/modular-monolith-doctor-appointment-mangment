@@ -17,3 +17,6 @@ dotenv = {version = "0.15.0"}
 appointment_booking = {path = "./appointment_booking", version = "0.1.0"}
 doctor_appointment_management = {path = "./doctor_appointment_management", version = "0.1.0"}
 doctor_availability = {path = "./doctor_availability", version = "0.1.0"}
+shared = {path = "./shared", version = "0.1.0"}
+anyhow = "1.0.95"
+tower = { version = "0.5.2", features = ["timeout"]}
