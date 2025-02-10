@@ -24,9 +24,9 @@ impl ApplicationError {
     }
     pub fn get_json_serializable_payload(&self) -> ErrorPayload{
         match self {
-            ApplicationError::InvalidRequestPayload(msg,err)|
-            ApplicationError::InvalidOperation(msg,err)|
-            ApplicationError::RequestNotFound(msg,err) =>{
+            ApplicationError::InvalidRequestPayload(msg,_err)|
+            ApplicationError::InvalidOperation(msg,_err)|
+            ApplicationError::RequestNotFound(msg,_err) =>{
                 ErrorPayload{message: msg.to_string()}
             },
             ApplicationError::InternalServerError(_) => {
