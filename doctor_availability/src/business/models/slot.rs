@@ -1,6 +1,6 @@
 use bson::{DateTime, oid::ObjectId};
 use crate::data::SlotDataModel;
-
+use crate::business::doctor_availability_error::{DoctorAvailabilityError, DoctorAvailabilityResult};
 #[derive(Debug, Clone)]
 pub struct Slot {
     id: ObjectId,
@@ -91,35 +91,13 @@ impl Slot {
 }
 // Setters
 impl Slot {
-    pub fn reserve(&mut self, patient_id: ObjectId)  {
+    pub fn reserve(mut self, patient_id: ObjectId)  -> DoctorAvailabilityResult<Slot>{
         if self.is_reserved(){
-            panic!("Slot already reserved");
+            return Err(DoctorAvailabilityError::FailedToReserveSlot(self, String::from("slot is already reserved!")));
         }
         self.reserving_patient_id = Some(patient_id);
         self.reserved_at = Option::from(DateTime::now());
-
-    }
-    pub fn complete(&mut self)  {
-        if !self.is_reserved(){
-            panic!("Can't complete an unreserved slot");
-        }
-        if self.is_canceled(){
-            panic!("Can't complete a canceled slot");
-        }
-        if self.is_completed(){
-            panic!("Slot already completed");
-        }
-        self.completed_at = Option::from(DateTime::now());
-
-    }
-    pub fn cancel(&mut self)  {
-        if self.is_completed(){
-            panic!("Can't cancel a completed slot");
-        }
-        if self.is_canceled(){
-            panic!("Slot already canceled");
-        }
-        self.canceled_at = Option::from(DateTime::now());
+        Ok(self)
 
     }
 }
