@@ -22,8 +22,8 @@ impl fmt::Display for DoctorAvailabilityError {
             DoctorAvailabilityError::FailedToAddSlot(reason) => {
                 write!(f, "DoctorAvailabilityError::FailedToAddSlot: Couldn't add slot because {reason}.")
             }
-            DoctorAvailabilityError::FailedToReserveSlot(_, reason) => {
-                write!(f, "DoctorAvailabilityError::FailedReserveSlot: Couldn't reserve slot because {reason}.")
+            DoctorAvailabilityError::FailedToReserveSlot(slot, reason) => {
+                write!(f, "DoctorAvailabilityError::FailedReserveSlot: Couldn't reserve slot({}) because {reason}.", slot.get_id())
             }
             DoctorAvailabilityError::FailedDeleteSlot(_, reason) => {
                 write!(f, "DoctorAvailabilityError::FailedDeleteSlot: Couldn't delete slot because {reason}.")
@@ -41,5 +41,6 @@ impl fmt::Display for DoctorAvailabilityError {
         }
     }
 }
+
 
 impl error::Error  for DoctorAvailabilityError {}
