@@ -9,7 +9,7 @@ pub type DoctorAvailabilityResult<T> = Result<T, DoctorAvailabilityError>;
 
 pub enum DoctorAvailabilityError {
     FailedToAddSlot(String),
-    FailedReserveSlot(Slot, String),
+    FailedToReserveSlot(Slot, String),
     FailedDeleteSlot(Slot, String),
     SlotNotFound(ObjectId),
     DoctorNotFound(ObjectId),
@@ -22,7 +22,7 @@ impl fmt::Display for DoctorAvailabilityError {
             DoctorAvailabilityError::FailedToAddSlot(reason) => {
                 write!(f, "DoctorAvailabilityError::FailedToAddSlot: Couldn't add slot because {reason}.")
             }
-            DoctorAvailabilityError::FailedReserveSlot(_, reason) => {
+            DoctorAvailabilityError::FailedToReserveSlot(_, reason) => {
                 write!(f, "DoctorAvailabilityError::FailedReserveSlot: Couldn't reserve slot because {reason}.")
             }
             DoctorAvailabilityError::FailedDeleteSlot(_, reason) => {
