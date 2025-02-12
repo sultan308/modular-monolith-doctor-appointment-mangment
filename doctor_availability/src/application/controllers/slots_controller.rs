@@ -50,20 +50,7 @@ impl SlotsController {
         Ok(ResponseDoctorSlot::from_slot(slot))
 
     }
-    pub async fn complete_slot(&mut self, slot_id: ObjectId, _doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {
-        let mut slot = self.slots_services.get_slot(slot_id).await?;
-        slot.complete();
-        self.slots_services.update_slot(&slot).await?;
-        Ok(ResponseDoctorSlot::from_slot(slot))
 
-    }
-    pub async fn cancel_slot(&mut self, slot_id: ObjectId, _doctor_id : ObjectId) -> Result<ResponseDoctorSlot> {
-        let mut slot = self.slots_services.get_slot(slot_id).await?;
-        slot.cancel();
-        self.slots_services.update_slot(&slot).await?;
-        Ok(ResponseDoctorSlot::from_slot(slot))
-
-    }
 }
 
 
