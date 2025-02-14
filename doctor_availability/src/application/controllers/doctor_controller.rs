@@ -1,13 +1,12 @@
 use anyhow::Result;
 use bson::oid::ObjectId;
 use mongodb::Database;
-
+use shared::errors::{ApplicationError,ApplicationResult};
 use crate::application::payloads::{CreateDoctorPayload, UpdateDoctorPayload};
 use crate::application::responses::{ResponseDoctor};
 
-use crate::business::DoctorServices;
-
-
+use crate::business::{DoctorAvailabilityError, DoctorServices};
+use crate::data::RepositoryError;
 
 pub struct DoctorsController {
     doctor_services : DoctorServices
@@ -20,24 +19,46 @@ impl DoctorsController {
         }
 
     }
-    pub async fn create_doctor (&mut self, create_doctor_payload: CreateDoctorPayload) ->  Result<ResponseDoctor>  {
+    pub async fn create_doctor (&mut self, create_doctor_payload: CreateDoctorPayload) ->  ApplicationResult<ResponseDoctor>  {
         let CreateDoctorPayload{ name, email }= &create_doctor_payload;
-        let new_doctor = self.doctor_services.create_doctor_service(name, email).await?;
+        let new_doctor = self.doctor_services.create_doctor_service(name, email)
+            .await
+            .map_err(|application_error| ApplicationError::InternalServerError(Box::new(application_error)))?;
         Ok(ResponseDoctor::from_doctor(new_doctor))
     }
-    pub async fn get_all(&self) -> Result<Vec<ResponseDoctor>> {
-        let found_doctor = self.doctor_services.get_all_doctors().await?;
+    pub async fn get_all(&self) -> ApplicationResult<Vec<ResponseDoctor>> {
+        let found_doctor = self.doctor_services.get_all_doctors()
+            .await
+            .map_err(|application_error| ApplicationError::InternalServerError(Box::new(application_error)))?;
         Ok(found_doctor.into_iter().map(ResponseDoctor::from_doctor).collect())
     }
-    pub async fn get_by_id(&self, doctor_id : ObjectId) -> Result<ResponseDoctor> {
-        let found_doctor = self.doctor_services.get_doctor_by_id(doctor_id).await?;
+    pub async fn get_by_id(&self, doctor_id : ObjectId) -> ApplicationResult<ResponseDoctor> {
+        let found_doctor = self.doctor_services.get_doctor_by_id(doctor_id)
+            .await
+            .map_err(|doctor_availability_error| {
+                if let DoctorAvailabilityError::DoctorNotFound(not_found_doctor_id) = doctor_availability_error {
+                    return ApplicationError::RequestNotFound(format!("No doctor found with the requested id ({not_found_doctor_id})"),Box::new(doctor_availability_error))
+                };
+                ApplicationError::InternalServerError(Box::new(doctor_availability_error))
+            })?;
         Ok(ResponseDoctor::from_doctor(found_doctor))
     }
-    pub async fn update_doctor (&mut self, doctor_id: ObjectId, update_doctor_payload: UpdateDoctorPayload) ->  Result<ResponseDoctor>  {
-        let mut doctor = self.doctor_services.get_doctor_by_id(doctor_id).await?;
+    pub async fn update_doctor (&mut self, doctor_id: ObjectId, update_doctor_payload: UpdateDoctorPayload) ->  ApplicationResult<ResponseDoctor>  {
+
+        let mut doctor = self.doctor_services.get_doctor_by_id(doctor_id)
+            .await
+            .map_err(|doctor_availability_error| {
+                if let DoctorAvailabilityError::DoctorNotFound(not_found_doctor_id) = doctor_availability_error {
+                    return ApplicationError::RequestNotFound(format!("No doctor found with the requested id ({not_found_doctor_id})"),Box::new(doctor_availability_error))
+                };
+                ApplicationError::InternalServerError(Box::new(doctor_availability_error))
+            })?;
+
         if let Some(new_doctor_name) = update_doctor_payload.name {
             doctor.update_name(&new_doctor_name);
-            doctor = self.doctor_services.update_doctor_service(doctor).await?;
+            doctor = self.doctor_services.update_doctor_service(doctor)
+                .await
+                .map_err(|application_error| ApplicationError::InternalServerError(Box::new(application_error)))?;
         }
         Ok(ResponseDoctor::from_doctor(doctor))
     }
