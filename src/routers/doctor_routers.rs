@@ -7,8 +7,9 @@ use mongodb::bson::{oid::ObjectId};
 use doctor_availability::payloads::{CreateDoctorPayload, UpdateDoctorPayload};
 use doctor_availability::responses::ResponseDoctor;
 use doctor_appointment_management::ResponseAppointment;
+use shared::errors::{ApplicationError, ApplicationResult};
+
 use crate::AppState;
-use shared::errors::ApplicationResult;
 pub fn get_doctors_router(app_state: AppState) -> Router {
     let  doctors_router= Router::new()
         .route("/", get(|| async { "Hello, World!" }))
@@ -26,31 +27,34 @@ pub fn get_doctors_router(app_state: AppState) -> Router {
 }
 
 async fn create_doctor_handler(State(app_state): State<AppState>,
-                               Json(create_doctor_payload): Json<CreateDoctorPayload>) -> (StatusCode, Json<ResponseDoctor>){
+                               create_doctor_payload: Result<Json<CreateDoctorPayload>,JsonRejection>) -> ApplicationResult<(StatusCode, Json<ResponseDoctor>)>{
+    let Json(create_doctor_payload) = create_doctor_payload.map_err(|e| ApplicationError::InvalidRequestPayload("Invalid create doctor body".to_string(), Box::new(e)))?;
     let mut doctors_controller = app_state.doctors_controller.lock().await;
-    let response_doctor = doctors_controller.create_doctor(create_doctor_payload).await.unwrap();
-    (StatusCode::CREATED, Json::from(response_doctor))
+    let response_doctor = doctors_controller.create_doctor(create_doctor_payload).await?;
+    Ok((StatusCode::CREATED, Json(response_doctor)))
 }
 
 async fn update_doctor_handler(State(app_state): State<AppState>,
                                Path(doctor_id): Path<ObjectId>,
-                               Json(update_doctor_payload): Json<UpdateDoctorPayload>) -> (StatusCode, Json<ResponseDoctor>){
+                               update_doctor_payload: Result<Json<UpdateDoctorPayload>,JsonRejection>) -> ApplicationResult<(StatusCode, Json<ResponseDoctor>)>{
+
+    let Json(update_doctor_payload) = update_doctor_payload.map_err(|e| ApplicationError::InvalidRequestPayload("Invalid create doctor body".to_string(), Box::new(e)))?;
     let mut doctors_controller = app_state.doctors_controller.lock().await;
-    let response_doctor = doctors_controller.update_doctor(doctor_id , update_doctor_payload).await.unwrap();
-    (StatusCode::OK, Json::from(response_doctor))
+    let response_doctor = doctors_controller.update_doctor(doctor_id , update_doctor_payload).await?;
+    Ok((StatusCode::OK, Json::from(response_doctor)))
 }
 
 async fn get_doctor_handler(State(app_state): State<AppState>,
-                            Path(doctor_id): Path<ObjectId>) -> (StatusCode, Json<ResponseDoctor>){
+                            Path(doctor_id): Path<ObjectId>) -> ApplicationResult<(StatusCode, Json<ResponseDoctor>)>{
     let doctors_controller = &app_state.doctors_controller.lock().await;
-    let response_doctor = doctors_controller.get_by_id(doctor_id).await.unwrap();
-    (StatusCode::OK, Json::from(response_doctor))
+    let response_doctor = doctors_controller.get_by_id(doctor_id).await?;
+    Ok((StatusCode::OK, Json::from(response_doctor)))
 }
 
-async fn get_doctors(State(app_state): State<AppState>) -> (StatusCode, Json<Vec<ResponseDoctor>>){
+async fn get_doctors(State(app_state): State<AppState>) -> ApplicationResult<(StatusCode, Json<Vec<ResponseDoctor>>)>{
     let doctors_controller = &app_state.doctors_controller.lock().await;
-    let response_doctors = doctors_controller.get_all().await.unwrap();
-    (StatusCode::OK, Json::from(response_doctors))
+    let response_doctors = doctors_controller.get_all().await?;
+    Ok((StatusCode::OK, Json::from(response_doctors)))
 }
 async fn get_doctor_appointments(State(app_state): State<AppState>,
                                 Path(doctor_id): Path<ObjectId>) -> ApplicationResult<(StatusCode, Json<Vec<ResponseAppointment>>)>{
