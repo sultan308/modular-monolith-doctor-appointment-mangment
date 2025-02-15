@@ -1,12 +1,11 @@
-use anyhow::Result;
 use bson::oid::ObjectId;
 use mongodb::Database;
 use shared::errors::{ApplicationError,ApplicationResult};
+
 use crate::application::payloads::{CreateDoctorPayload, UpdateDoctorPayload};
 use crate::application::responses::{ResponseDoctor};
 
 use crate::business::{DoctorAvailabilityError, DoctorServices};
-use crate::data::RepositoryError;
 
 pub struct DoctorsController {
     doctor_services : DoctorServices
@@ -62,9 +61,4 @@ impl DoctorsController {
         }
         Ok(ResponseDoctor::from_doctor(doctor))
     }
-
-
-       // let new_doctor = self.doctor_services.create_doctor_service(new_doctor_name).await?;
-        //Ok(ResponseDoctor::from_doctor(new_doctor))
-    //}
 }
