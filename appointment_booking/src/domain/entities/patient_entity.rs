@@ -1,5 +1,5 @@
 use bson::{oid::ObjectId};
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct PatientEntity{
     id: ObjectId,
     name: String,

@@ -1,6 +1,6 @@
 use bson::{oid::ObjectId, DateTime};
 use crate::domain::{DoctorEntity, PatientEntity, SlotEntity};
-
+#[derive(Debug)]
 pub struct AppointmentEntity {
     patient: PatientEntity,
     doctor: DoctorEntity,
