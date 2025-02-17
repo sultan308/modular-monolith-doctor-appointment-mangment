@@ -1,6 +1,7 @@
+mod appointment_booking_error;
 mod entities;
 mod repository_traits;
-
+pub use appointment_booking_error::{AppointmentBookingError, AppointmentBookingResult};
 pub use entities::{AppointmentEntity,
                    DoctorEntity,
                    PatientEntity,
