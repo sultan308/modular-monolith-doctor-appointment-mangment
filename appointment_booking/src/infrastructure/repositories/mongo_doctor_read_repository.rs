@@ -1,7 +1,8 @@
 use async_trait::async_trait;
 use bson::{oid::ObjectId, doc};
 use mongodb::{Collection, Database};
-use crate::domain::{DoctorEntity, DoctorReadRepositoryTrait , DoctorReadRepositoryResult};
+use crate::domain::{AppointmentBookingResult, AppointmentBookingError,
+                    DoctorEntity, DoctorReadRepositoryTrait};
 
 use crate::infrastructure::data_models::DoctorDataModel;
 const DEFAULT_DOCTORS_COLLECTION_NAME: &str = "doctors";
@@ -20,11 +21,14 @@ impl MongoDoctorReadRepository {
 }
 #[async_trait]
 impl DoctorReadRepositoryTrait for MongoDoctorReadRepository{
-    async fn load(&self, doctor_id: ObjectId) -> DoctorReadRepositoryResult<DoctorEntity> {
+    async fn load(&self, doctor_id: ObjectId) -> AppointmentBookingResult<DoctorEntity> {
         let loaded_doctor = self
             .doctors_collection
             .find_one(doc! { "_id": doctor_id })
-            .await?;
-        Ok(loaded_doctor.unwrap().to_domain_entity())
+            .await
+            .map_err(|mongo_err| AppointmentBookingError::InternalBookingError(Box::new(mongo_err)))?;
+
+        let doctor_model = loaded_doctor.ok_or(AppointmentBookingError::DoctorNotFound(doctor_id))?;
+        Ok(doctor_model.to_domain_entity())
     }
 }

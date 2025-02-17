@@ -1,13 +1,10 @@
-use crate::domain::entities::DoctorEntity;
-use anyhow::Result;
 use async_trait::async_trait;
 use bson::{oid::ObjectId};
 
-
-
-pub type DoctorReadRepositoryResult<T> = Result<T>;
+use crate::domain::entities::DoctorEntity;
+use crate::domain::appointment_booking_error::AppointmentBookingResult;
 
 #[async_trait]
 pub trait DoctorReadRepositoryTrait: Send + Sync {
-    async fn load(&self, doctor_id: ObjectId) -> DoctorReadRepositoryResult<DoctorEntity>;
+    async fn load(&self, doctor_id: ObjectId) -> AppointmentBookingResult<DoctorEntity>;
 }
