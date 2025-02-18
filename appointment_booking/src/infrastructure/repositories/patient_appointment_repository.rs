@@ -6,7 +6,10 @@ use futures::lock::Mutex;
 use doctor_availability::controllers::SlotsController;
 use doctor_availability::responses:: ResponseDoctorSlot;
 use mongodb::Database;
-use crate::domain::{PatientAppointmentRepositoryTrait, PatientAppointmentRepositoryResult, AppointmentEntity, PatientEntity, SlotEntity, DoctorReadRepositoryTrait};
+use shared::errors::ApplicationError;
+use crate::domain::{
+    AppointmentEntity, AppointmentBookingError, AppointmentBookingResult,
+    PatientAppointmentRepositoryTrait, PatientEntity, SlotEntity, DoctorReadRepositoryTrait};
 use crate::infrastructure::repositories::MongoDoctorReadRepository;
 
 
@@ -25,36 +28,55 @@ impl DoctorAvailabilityPatientAppointmentRepository {
     }
 }
 impl DoctorAvailabilityPatientAppointmentRepository {
-    async fn construct_appointment_from_patient_slots(&self, patient: PatientEntity, reserved_slot_data: ResponseDoctorSlot) -> AppointmentEntity{
-        let doctor = self.doctors_read_repo.load(reserved_slot_data.doctor_id).await.unwrap();
+    async fn construct_appointment_from_patient_slots(&self, patient: PatientEntity, reserved_slot_data: ResponseDoctorSlot) -> AppointmentBookingResult<AppointmentEntity>{
+        let doctor = self.doctors_read_repo.load(reserved_slot_data.doctor_id).await?;
         let reserved_at = DateTime::from(reserved_slot_data.reserved_at.unwrap());
         let slot = SlotEntity::from_doctor_availability_response_slot(reserved_slot_data);
-        AppointmentEntity::build(patient, doctor, slot, reserved_at)
+        Ok(AppointmentEntity::build(patient, doctor, slot, reserved_at))
     }
 
 }
 #[async_trait]
 impl PatientAppointmentRepositoryTrait for DoctorAvailabilityPatientAppointmentRepository{
-    async fn get_all_bookable_slots(&self) -> PatientAppointmentRepositoryResult<Vec<SlotEntity>>{
+    async fn get_all_bookable_slots(&self) -> AppointmentBookingResult<Vec<SlotEntity>>{
         let slots_controller = self.slots_controller.lock().await;
-        let bookable_slots = slots_controller.get_all_bookable_slots().await?;
+        let bookable_slots = slots_controller.get_all_bookable_slots().await
+            .map_err(|mongo_err| AppointmentBookingError::InternalBookingError(Box::new(mongo_err)))?;
+
         Ok(bookable_slots.into_iter().map(SlotEntity::from_doctor_availability_response_slot).collect())
     }
 
-    async fn create_patient_appointment(&mut self, patient: PatientEntity, bookable_slot_id: ObjectId) -> PatientAppointmentRepositoryResult<AppointmentEntity> {
+    async fn create_patient_appointment(&mut self, patient: PatientEntity, bookable_slot_id: ObjectId) -> AppointmentBookingResult<AppointmentEntity> {
         let mut slots_controller = self.slots_controller.lock().await;
-        let reserved_slot = slots_controller.reserve_slot(bookable_slot_id, patient.get_id()).await?;
-        let appointment_entity =  self.construct_appointment_from_patient_slots(patient, reserved_slot).await;
+        let reserved_slot = slots_controller.reserve_slot(bookable_slot_id, patient.get_id())
+            .await
+            .map_err(|application_error: ApplicationError| {
+                if let ApplicationError::InvalidOperation(_,_) = application_error {
+                    return AppointmentBookingError::AppointmentAlreadyBooked(bookable_slot_id)
+                };
+                AppointmentBookingError::InternalBookingError(Box::new(application_error))
+            })?;
+
+        let appointment_entity =  self.construct_appointment_from_patient_slots(patient, reserved_slot).await?;
         Ok(appointment_entity)
 
     }
 
-    async fn get_all_patient_appointments(&self, patient: PatientEntity) -> PatientAppointmentRepositoryResult<Vec<AppointmentEntity>> {
+    async fn get_all_patient_appointments(&self, patient: PatientEntity) -> AppointmentBookingResult<Vec<AppointmentEntity>> {
 
         let slots_controller = self.slots_controller.lock().await;
-        let patient_slots = slots_controller.get_all_slots_by_patient(patient.get_id()).await?;
-        let appointments = futures::future::join_all(patient_slots.into_iter()
-            .map(|patient_slot| self.construct_appointment_from_patient_slots(patient.clone(), patient_slot))).await;
+
+        let patient_slots = slots_controller.get_all_slots_by_patient(patient.get_id())
+            .await
+            .map_err(|mongo_err| AppointmentBookingError::InternalBookingError(Box::new(mongo_err)))?;
+
+        let mut appointments: Vec<AppointmentEntity> = Vec::new();
+
+        for patient_slot in patient_slots {
+            let appointment = self.construct_appointment_from_patient_slots(patient.clone(), patient_slot).await?;
+            appointments.push(appointment)
+        }
+
         Ok(appointments)
     }
 }
