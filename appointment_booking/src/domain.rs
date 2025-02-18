@@ -8,10 +8,5 @@ pub use entities::{AppointmentEntity,
                    SlotEntity,
 };
 pub use repository_traits::{DoctorReadRepositoryTrait,
-
                             PatientAppointmentRepositoryTrait,
-                            PatientAppointmentRepositoryResult,
-
-                            PatientRepositoryResult,
-                            PatientRepositoryTrait
-};
+                            PatientRepositoryTrait};
