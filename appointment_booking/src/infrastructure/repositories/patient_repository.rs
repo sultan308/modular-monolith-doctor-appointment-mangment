@@ -33,11 +33,10 @@ impl PatientRepositoryTrait for MongoPatientRepository{
 
     async fn create_patient(&mut self, new_patient: &PatientEntity) -> AppointmentBookingResult<ObjectId> {
         let new_patient_data = PatientDataModel::from(new_patient);
-        let patient_create_res = self
-            .patients_collection
+        self.patients_collection
             .insert_one(new_patient_data)
             .await
-            .map_err(|mongo_err| AppointmentBookingError::InternalBookingError(Box::new(mongo_err)))?;;
+            .map_err(|mongo_err| AppointmentBookingError::InternalBookingError(Box::new(mongo_err)))?;
         Ok(new_patient.get_id())
     }
 }
