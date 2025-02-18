@@ -1,6 +1,5 @@
 use bson::oid::ObjectId;
 use std::{error, fmt};
-use crate::domain::AppointmentEntity;
 
 pub type AppointmentBookingResult<T> = Result<T, AppointmentBookingError>;
 
@@ -9,7 +8,7 @@ pub enum AppointmentBookingError {
     AppointmentNotFound(ObjectId),
     AppointmentAlreadyBooked(ObjectId),
     DoctorNotFound(ObjectId),
-    InternalBookingError(Box<dyn error::Error>),
+    InternalBookingError(Box<dyn error::Error + Send + Sync>),
     PatientNotFound(ObjectId),
 
 }
