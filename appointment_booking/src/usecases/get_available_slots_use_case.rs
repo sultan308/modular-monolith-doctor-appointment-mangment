@@ -1,10 +1,11 @@
-use anyhow::Result;
-use std::sync::Arc;
 use futures::lock::Mutex;
+use mongodb::Database;
+use shared::errors::{ApplicationError, ApplicationResult};
+use std::sync::Arc;
 
 use doctor_availability::controllers::SlotsController;
-use mongodb::Database;
-use crate::domain::{PatientAppointmentRepositoryTrait};
+
+use crate::domain::{AppointmentBookingError, PatientAppointmentRepositoryTrait};
 use crate::infrastructure::DoctorAvailabilityPatientAppointmentRepository;
 use crate::usecases::responses::AvailableSlotResponse;
 
@@ -21,8 +22,11 @@ impl GetAvailableSlotsUseCase {
 }
 
 impl GetAvailableSlotsUseCase{
-    pub async fn invoke(&self) -> Result<Vec<AvailableSlotResponse>>{
-        let available_slots = self.patient_appointment_repository.get_all_bookable_slots().await?;
+    pub async fn invoke(&self) -> ApplicationResult<Vec<AvailableSlotResponse>>{
+        let available_slots = self.patient_appointment_repository
+            .get_all_bookable_slots()
+            .await
+            .map_err(|appointment_booking_error: AppointmentBookingError| ApplicationError::InternalServerError(Box::new(appointment_booking_error)))?;;
         Ok(available_slots.into_iter().map(AvailableSlotResponse::from).collect())
     }
 }
