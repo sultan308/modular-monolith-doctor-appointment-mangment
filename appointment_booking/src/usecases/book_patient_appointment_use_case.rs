@@ -1,13 +1,13 @@
 use std::sync::Arc;
-use anyhow::Result;
 use bson::oid::ObjectId;
-use doctor_availability::controllers::SlotsController;
+use shared::errors::{ApplicationError,ApplicationResult};
 use futures::lock::Mutex;
 
 use appointment_confirmation::{payloads::AppointmentBookedNotifierPayload, NotifierTrigger};
+use doctor_availability::controllers::SlotsController;
 use shared::types::ContactData;
 
-use crate::domain::{AppointmentEntity, PatientAppointmentRepositoryTrait};
+use crate::domain::{AppointmentBookingError, AppointmentEntity, PatientAppointmentRepositoryTrait};
 use crate::infrastructure::{DoctorAvailabilityPatientAppointmentRepository, MongoDataBase};
 use crate::usecases::GetPatientUseCase;
 use crate::usecases::responses::PatientAppointmentResponse;
@@ -38,9 +38,16 @@ impl BookPatientAppointmentUseCase {
            appointment_time: booked_appointment.get_appointment_start_time().to_chrono(),
         }
     }
-    pub async fn invoke(&mut self, patient_id: ObjectId, slot_id: ObjectId) -> Result<PatientAppointmentResponse>{
+    pub async fn invoke(&mut self, patient_id: ObjectId, slot_id: ObjectId) -> ApplicationResult<PatientAppointmentResponse>{
         let patient = self.get_patient_use_case.by_id(patient_id).await?;
-        let booked_patient_appointment = self.patient_appointment_repository.create_patient_appointment(patient.to_patient_entity(), slot_id).await?;
+        let booked_patient_appointment = self.patient_appointment_repository.create_patient_appointment(patient.to_patient_entity(), slot_id)
+            .await
+            .map_err(|appointment_booking_error:AppointmentBookingError| {
+                if let AppointmentBookingError::AppointmentAlreadyBooked(appointment_id) = appointment_booking_error {
+                    return ApplicationError::InvalidOperation(format!("Appointment with requested id ({appointment_id}) is already booked."), Box::new(appointment_booking_error));
+                };
+                ApplicationError::InternalServerError(Box::new(appointment_booking_error))
+            })?;
 
         let appointment_booked_notifier_payload = BookPatientAppointmentUseCase::extract_appointment_booked_notifier_payload(&booked_patient_appointment);
         self.notifier_trigger.appointment_booking_confirmation(appointment_booked_notifier_payload).await;
