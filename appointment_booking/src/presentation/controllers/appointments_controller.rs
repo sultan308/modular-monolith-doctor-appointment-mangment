@@ -1,6 +1,6 @@
-use anyhow::Result;
 use bson::oid::ObjectId;
 use futures::lock::Mutex;
+use shared::errors::{ApplicationError,ApplicationResult};
 use std::sync::Arc;
 
 use doctor_availability::controllers::SlotsController;
@@ -26,15 +26,15 @@ impl AppointmentsController {
     }
 }
 impl AppointmentsController {
-    pub async fn get_available_appointments (&self, _patient_id: ObjectId) ->  Result<Vec<AvailableSlotResponse>>  {
+    pub async fn get_available_appointments (&self, _patient_id: ObjectId) ->  ApplicationResult<Vec<AvailableSlotResponse>>  {
         let available_appointments = self.get_available_slots_use_case.invoke().await?;
         Ok(available_appointments)
     }
-    pub async fn get_patient_booked_appointments (&self, patient_id: ObjectId) ->  Result<Vec<PatientAppointmentResponse>>  {
+    pub async fn get_patient_booked_appointments (&self, patient_id: ObjectId) ->  ApplicationResult<Vec<PatientAppointmentResponse>>  {
         let patient_appointments = self.get_patient_appointments_use_case.by_patient_id(patient_id).await?;
         Ok(patient_appointments)
     }
-    pub async fn book_appointment (&mut self, patient_id: ObjectId, slot_id: ObjectId ) ->  Result<PatientAppointmentResponse>  {
+    pub async fn book_appointment (&mut self, patient_id: ObjectId, slot_id: ObjectId ) ->  ApplicationResult<PatientAppointmentResponse>  {
         let patient_appointment = self.book_patient_appointment_use_case.invoke(patient_id,slot_id).await?;
         Ok(patient_appointment)
     }
