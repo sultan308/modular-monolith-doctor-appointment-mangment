@@ -26,7 +26,7 @@ impl GetAvailableSlotsUseCase{
         let available_slots = self.patient_appointment_repository
             .get_all_bookable_slots()
             .await
-            .map_err(|appointment_booking_error: AppointmentBookingError| ApplicationError::InternalServerError(Box::new(appointment_booking_error)))?;;
+            .map_err(|appointment_booking_error: AppointmentBookingError| ApplicationError::InternalServerError(Box::new(appointment_booking_error)))?;
         Ok(available_slots.into_iter().map(AvailableSlotResponse::from).collect())
     }
 }
