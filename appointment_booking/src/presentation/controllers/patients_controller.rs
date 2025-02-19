@@ -1,5 +1,5 @@
-use anyhow::Result;
 use bson::oid::ObjectId;
+use shared::errors::{ApplicationError, ApplicationResult};
 
 use crate::infrastructure::MongoDataBase;
 use crate::usecases::{CreatePatientUseCase,
@@ -22,7 +22,7 @@ impl PatientController {
     }
 }
 impl PatientController {
-    pub async fn create_patient (&mut self, create_patient_payload: CreatePatientPayload) ->  Result<ResponsePatient>  {
+    pub async fn create_patient (&mut self, create_patient_payload: CreatePatientPayload) ->  ApplicationResult<ResponsePatient>  {
         let create_patient_interface = CreatePatientUseCaseInterface{
             name:create_patient_payload.name,
             email:create_patient_payload.email
@@ -30,7 +30,7 @@ impl PatientController {
         let created_patient = self.create_patient_use_case.invoke(create_patient_interface).await?;
         Ok(created_patient)
     }
-    pub async fn get_patient (&mut self, patient_id: ObjectId) ->  Result<ResponsePatient>  {
+    pub async fn get_patient (&mut self, patient_id: ObjectId) ->  ApplicationResult<ResponsePatient>  {
         let found_patient = self.get_patient_use_case.by_id(patient_id).await?;
         Ok(found_patient)
     }
