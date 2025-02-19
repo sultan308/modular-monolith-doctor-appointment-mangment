@@ -1,11 +1,12 @@
-use anyhow::Result;
-use std::sync::Arc;
 use bson::oid::ObjectId;
 use futures::lock::Mutex;
+use shared::errors::{ApplicationError,ApplicationResult};
+use std::sync::Arc;
+
 
 use doctor_availability::controllers::SlotsController;
 
-use crate::domain::{PatientAppointmentRepositoryTrait};
+use crate::domain::{AppointmentBookingError, PatientAppointmentRepositoryTrait};
 use crate::infrastructure::{DoctorAvailabilityPatientAppointmentRepository, MongoDataBase};
 use crate::usecases::{GetPatientUseCase};
 use crate::usecases::responses::PatientAppointmentResponse;
@@ -26,9 +27,13 @@ impl GetPatientAppointmentsUseCase{
 }
 
 impl GetPatientAppointmentsUseCase{
-    pub async fn by_patient_id(&self, patient_id: ObjectId) -> Result<Vec<PatientAppointmentResponse>>{
+    pub async fn by_patient_id(&self, patient_id: ObjectId) -> ApplicationResult<Vec<PatientAppointmentResponse>>{
         let patient = self.get_patient_use_case.by_id(patient_id).await?;
-        let patient_appointments = self.patient_appointment_repository.get_all_patient_appointments(patient.to_patient_entity()).await?;
+
+        let patient_appointments = self.patient_appointment_repository.get_all_patient_appointments(patient.to_patient_entity())
+            .await
+            .map_err(|appointment_booking_error: AppointmentBookingError| ApplicationError::InternalServerError(Box::new(appointment_booking_error)))?;
+
         Ok(patient_appointments.into_iter().map(PatientAppointmentResponse::from).collect())
     }
 }
