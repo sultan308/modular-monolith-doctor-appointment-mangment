@@ -2,7 +2,7 @@ mod routers;
 mod app_state;
 
 use std::env;
-
+use std::env::VarError;
 use dotenv::dotenv;
 use mongodb::{Client, Database};
 use mongodb::bson::DateTime;
@@ -20,6 +20,7 @@ async fn connect_to_mongo_db() -> Database {
     client.database("doctor-appointment-booking-system")
 
 }
+
 #[tokio::main]
 async fn main() {
     let mongodb = connect_to_mongo_db().await;
@@ -34,10 +35,12 @@ async fn main() {
 
     println!("{} :: starting server...", DateTime::now());
 
-    let addr = "0.0.0.0:3000";
+    let port = env::var("PORT").unwrap_or_else(|_| "3000".to_string());
+
+    let addr = format!("0.0.0.0:{port}");
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
-    println!("{} :: listening on {}", DateTime::now(), addr);
+    println!("{} :: listening on http://localhost:{}", DateTime::now(), port);
     axum::serve(listener, app).await.unwrap();
 }
 
