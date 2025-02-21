@@ -2,7 +2,6 @@ mod routers;
 mod app_state;
 
 use std::env;
-use std::env::VarError;
 use dotenv::dotenv;
 use mongodb::{Client, Database};
 use mongodb::bson::DateTime;

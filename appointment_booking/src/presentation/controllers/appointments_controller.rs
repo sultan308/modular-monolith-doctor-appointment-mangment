@@ -1,6 +1,6 @@
 use bson::oid::ObjectId;
 use futures::lock::Mutex;
-use shared::errors::{ApplicationError,ApplicationResult};
+use shared::errors::ApplicationResult;
 use std::sync::Arc;
 
 use doctor_availability::controllers::SlotsController;

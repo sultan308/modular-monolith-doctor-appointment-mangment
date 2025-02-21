@@ -1,5 +1,5 @@
 use bson::oid::ObjectId;
-use shared::errors::{ApplicationError, ApplicationResult};
+use shared::errors::ApplicationResult;
 
 use crate::infrastructure::MongoDataBase;
 use crate::usecases::{CreatePatientUseCase,
