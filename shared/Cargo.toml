@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 axum = { version = "0.8" }
 serde = { version = "1.0.217", features = ["derive"] }
+regex = "1.11.1"
